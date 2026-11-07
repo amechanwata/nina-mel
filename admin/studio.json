@@ -1,0 +1,7 @@
+{
+  "_note": "投稿スタジオの設定。repo＝原稿の保管庫（非公開）、pagesRepo＝公開用の保管庫、site＝サイトのURL。",
+  "repo": "amechanwata/nina-mel-site",
+  "branch": "main",
+  "pagesRepo": "amechanwata/nina-mel",
+  "site": "https://amechanwata.github.io/nina-mel/"
+}

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /nina-mel/admin/
+
+Sitemap: https://amechanwata.github.io/nina-mel/sitemap.xml
