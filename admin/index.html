@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#FBF8F3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="投稿スタジオ">
+<title>投稿スタジオ｜ニナとメル</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="studio.css">
+</head>
+<body>
+<header class="top">
+  <button class="top__back" type="button" data-back hidden aria-label="一覧へ戻る">←</button>
+  <h1 class="top__title" data-top-title>投稿スタジオ</h1>
+  <a class="top__site" data-site-link href="../" target="_blank" rel="noopener">サイトを見る</a>
+</header>
+
+<div class="deploy" data-deploy hidden role="status" aria-live="polite">
+  <span class="deploy__dot" aria-hidden="true"></span><span data-deploy-text></span>
+  <button class="deploy__close" type="button" data-deploy-close aria-label="閉じる">×</button>
+</div>
+
+<main>
+  <!-- ログイン -->
+  <section class="view card" data-view="login" hidden>
+    <h2>ログイン</h2>
+    <p class="muted">GitHub で作った合言葉（トークン <code>github_pat_…</code>）を貼ってください。この端末のブラウザにだけ保存されます。</p>
+    <label class="f">トークン<input type="password" autocomplete="off" data-token placeholder="github_pat_…"></label>
+    <button class="btn btn--main" type="button" data-login>ログイン</button>
+    <p class="msg" data-login-msg></p>
+  </section>
+
+  <!-- 一覧 -->
+  <section class="view" data-view="list" hidden>
+    <nav class="tabs" role="tablist" aria-label="種類">
+      <button role="tab" type="button" data-tab="novel" title="小説（いまは非公開）">小説</button>
+      <button role="tab" type="button" data-tab="manga">物語</button>
+      <button role="tab" type="button" data-tab="yonkoma">4コマ</button>
+      <button role="tab" type="button" data-tab="chapters">章</button>
+      <button role="tab" type="button" data-tab="likes" aria-label="♡の数">♡</button>
+    </nav>
+    <div data-list-body></div>
+    <p class="foot muted">細かい設定は <a href="cms/">旧画面</a> でも直せます。</p>
+  </section>
+
+  <!-- 編集 -->
+  <section class="view" data-view="edit" hidden>
+    <form data-form novalidate></form>
+  </section>
+</main>
+
+<div class="bar" data-bar hidden>
+  <p class="bar__msg" data-bar-msg role="status" aria-live="polite"></p>
+  <div class="bar__progress" aria-hidden="true"><span data-progress></span></div>
+  <div class="bar__btns">
+    <button class="btn btn--sub" type="button" data-save="draft">下書きで保存</button>
+    <button class="btn btn--main" type="button" data-save="published">公開する</button>
+  </div>
+</div>
+
+<template data-tpl-fab><button class="fab" type="button" data-new>＋ 新しく作る</button></template>
+<script type="module" src="studio.js"></script>
+</body>
+</html>

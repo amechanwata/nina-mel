@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="花と風車の村の風景（仮イラスト）">
+  <title>花と風車の村の風景（サイト制作用の仮イラスト）</title>
+  <defs>
+    <filter id="wc" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="3" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="14" xChannelSelector="R" yChannelSelector="G" result="d"/>
+      <feGaussianBlur in="d" stdDeviation="0.6"/>
+    </filter>
+    <filter id="paper">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3"/>
+      <feColorMatrix values="0 0 0 0 0.55  0 0 0 0 0.5  0 0 0 0 0.45  0 0 0 0.07 0"/>
+      <feComposite in2="SourceGraphic" operator="in"/>
+    </filter>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F7EEE6"/>
+      <stop offset="0.55" stop-color="#FBF5EF"/>
+      <stop offset="1" stop-color="#FBF8F3"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.7" cy="0.28" r="0.4">
+      <stop offset="0" stop-color="#FFF6E4" stop-opacity="1"/>
+      <stop offset="1" stop-color="#FFF6E4" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="path" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E9E1D3"/>
+      <stop offset="1" stop-color="#D9CDBA"/>
+    </linearGradient>
+    <style>
+      .blades{transform-origin:332px 418px;animation:spin 40s linear infinite}
+      @keyframes spin{to{transform:rotate(360deg)}}
+      @media (prefers-reduced-motion: reduce){.blades{animation:none}}
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <rect width="1600" height="900" fill="url(#glow)"/>
+
+  <!-- 遠景の森 -->
+  <g filter="url(#wc)">
+    <path d="M0 520 C120 470 220 500 330 470 C450 440 520 480 640 455 C760 430 860 470 980 450 C1100 430 1220 460 1340 440 C1450 425 1530 450 1600 440 L1600 900 L0 900Z" fill="#E4DCCF" opacity="0.55"/>
+    <path d="M0 575 C140 540 260 565 400 540 C540 515 640 560 780 540 C930 518 1060 552 1200 530 C1340 510 1470 540 1600 525 L1600 900 L0 900Z" fill="#D5CBBB" opacity="0.6"/>
+  </g>
+
+  <!-- 丘の神殿 -->
+  <g filter="url(#wc)">
+    <path d="M1080 560 C1150 470 1330 455 1440 520 L1500 600 L1040 600Z" fill="#DED3C3" opacity="0.8"/>
+  </g>
+  <g transform="translate(1180 395)">
+    <rect x="0" y="70" width="180" height="85" fill="#FDFCF9" stroke="#C9C2B4" stroke-width="2"/>
+    <path d="M-14 72 L90 22 L194 72Z" fill="#FDFCF9" stroke="#C9C2B4" stroke-width="2"/>
+    <g fill="#EFE9DE" stroke="#D3CBBB" stroke-width="1.5">
+      <rect x="18" y="82" width="12" height="73"/><rect x="58" y="82" width="12" height="73"/>
+      <rect x="110" y="82" width="12" height="73"/><rect x="150" y="82" width="12" height="73"/>
+    </g>
+    <path d="M80 155 L80 112 Q90 98 100 112 L100 155Z" fill="#E6D3C2"/>
+    <circle cx="90" cy="6" r="7" fill="#D7B979"/>
+    <line x1="90" y1="13" x2="90" y2="24" stroke="#D7B979" stroke-width="3"/>
+  </g>
+
+  <!-- 風車 -->
+  <g>
+    <path d="M300 600 L312 430 L352 430 L366 600Z" fill="#F7F1E6" stroke="#CDBFA8" stroke-width="2"/>
+    <path d="M304 432 L332 396 L360 432Z" fill="#F4BCAD"/>
+    <rect x="322" y="548" width="20" height="52" rx="10" fill="#B58E7A"/>
+    <g class="blades">
+      <g fill="#FBF9F4" stroke="#BFAF96" stroke-width="2">
+        <rect x="326" y="290" width="12" height="128" rx="2"/>
+        <rect x="326" y="290" width="12" height="128" rx="2" transform="rotate(90 332 418)"/>
+        <rect x="326" y="290" width="12" height="128" rx="2" transform="rotate(180 332 418)"/>
+        <rect x="326" y="290" width="12" height="128" rx="2" transform="rotate(270 332 418)"/>
+      </g>
+      <circle cx="332" cy="418" r="9" fill="#E8B3A3"/>
+    </g>
+  </g>
+
+  <!-- 中景の丘と家 -->
+  <g filter="url(#wc)">
+    <path d="M0 640 C200 590 380 620 560 600 C760 578 940 620 1120 600 C1300 582 1460 610 1600 598 L1600 900 L0 900Z" fill="#ECE6DA"/>
+  </g>
+  <g>
+    <!-- 家1 -->
+    <g transform="translate(520 520)">
+      <rect x="0" y="40" width="120" height="90" fill="#F5EBDD" stroke="#C8B59B" stroke-width="2"/>
+      <path d="M-10 44 L60 -6 L130 44Z" fill="#E8B3A3" opacity="0.85"/>
+      <rect x="20" y="62" width="26" height="26" fill="#FFF6E4" stroke="#B49C7D" stroke-width="2"/>
+      <rect x="74" y="78" width="26" height="52" fill="#B58E7A"/>
+      <g fill="#F4BCAD"><circle cx="18" cy="96" r="6"/><circle cx="30" cy="98" r="5"/><circle cx="44" cy="96" r="6"/></g>
+      <g fill="#B99B6C"><circle cx="24" cy="102" r="4"/><circle cx="38" cy="102" r="4"/></g>
+    </g>
+    <!-- 家2 -->
+    <g transform="translate(700 545)">
+      <rect x="0" y="34" width="96" height="74" fill="#FBF4EA" stroke="#C8B59B" stroke-width="2"/>
+      <path d="M-8 38 L48 -4 L104 38Z" fill="#B99B6C" opacity="0.9"/>
+      <rect x="14" y="52" width="22" height="22" fill="#FFF6E4" stroke="#B49C7D" stroke-width="2"/>
+      <rect x="58" y="62" width="22" height="46" fill="#A98370"/>
+      <path d="M20 48 q6 8 0 16 M30 48 q-6 8 0 16" stroke="#FFFFFF" stroke-width="3" fill="none"/>
+    </g>
+    <!-- 家3 -->
+    <g transform="translate(880 530)">
+      <rect x="0" y="44" width="130" height="86" fill="#F5EBDD" stroke="#C8B59B" stroke-width="2"/>
+      <path d="M-10 48 L65 -4 L140 48Z" fill="#F4BCAD"/>
+      <rect x="18" y="64" width="26" height="26" fill="#FFF6E4" stroke="#B49C7D" stroke-width="2"/>
+      <rect x="86" y="64" width="26" height="26" fill="#FFF6E4" stroke="#B49C7D" stroke-width="2"/>
+      <rect x="52" y="82" width="26" height="48" fill="#B58E7A"/>
+      <g fill="#F4BCAD"><circle cx="90" cy="96" r="5"/><circle cx="102" cy="98" r="6"/><circle cx="112" cy="95" r="5"/></g>
+    </g>
+  </g>
+
+  <!-- 石畳の道 -->
+  <g filter="url(#wc)">
+    <path d="M760 660 C740 720 640 790 520 900 L1000 900 C900 800 840 720 840 660Z" fill="url(#path)"/>
+  </g>
+  <g fill="none" stroke="#C8B9A2" stroke-width="2" opacity="0.7">
+    <path d="M770 690 h50 M748 720 h86 M720 752 h120 M690 786 h160 M650 822 h210 M610 862 h270"/>
+    <path d="M790 690 v30 M770 720 v32 M810 720 v32 M745 752 v34 M790 752 v34 M830 752 v34 M720 786 v36 M780 786 v36 M840 786 v36 M690 822 v40 M760 822 v40 M830 822 v40"/>
+  </g>
+
+  <!-- 手前の草花 -->
+  <g filter="url(#wc)">
+    <path d="M0 760 C160 720 330 740 520 760 L470 900 L0 900Z" fill="#D9D2C2"/>
+    <path d="M1040 770 C1200 730 1400 745 1600 720 L1600 900 L1000 900Z" fill="#D9D2C2"/>
+  </g>
+  <g>
+    <g fill="#F4BCAD">
+      <circle cx="80" cy="800" r="11"/><circle cx="150" cy="830" r="9"/><circle cx="240" cy="790" r="12"/><circle cx="330" cy="840" r="10"/><circle cx="410" cy="805" r="8"/>
+      <circle cx="1120" cy="810" r="10"/><circle cx="1230" cy="790" r="12"/><circle cx="1330" cy="835" r="9"/><circle cx="1440" cy="800" r="11"/><circle cx="1530" cy="840" r="10"/>
+    </g>
+    <g fill="#FFFFFF">
+      <circle cx="110" cy="850" r="8"/><circle cx="200" cy="815" r="7"/><circle cx="290" cy="865" r="8"/><circle cx="380" cy="790" r="7"/>
+      <circle cx="1170" cy="845" r="8"/><circle cx="1280" cy="820" r="7"/><circle cx="1390" cy="860" r="8"/><circle cx="1500" cy="790" r="7"/>
+    </g>
+    <g fill="#D7B979"><circle cx="80" cy="800" r="3"/><circle cx="240" cy="790" r="3"/><circle cx="1230" cy="790" r="3"/><circle cx="1440" cy="800" r="3"/></g>
+  </g>
+
+  <!-- 白いリボンの飾り綱 -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.95">
+    <path d="M0 120 C300 200 600 210 820 150"/>
+    <path d="M820 150 C1050 90 1340 110 1600 60"/>
+  </g>
+  <g fill="#FFFFFF" stroke="#E2D6C6" stroke-width="1.5">
+    <path d="M160 168 l-10 30 l14 -8 l8 14 l4 -32z"/>
+    <path d="M400 202 l-8 30 l14 -8 l8 14 l2 -32z"/>
+    <path d="M640 194 l-6 30 l14 -6 l10 12 l0 -32z"/>
+    <path d="M980 112 l-8 30 l14 -8 l8 14 l2 -32z"/>
+    <path d="M1240 104 l-8 30 l14 -8 l8 14 l2 -32z"/>
+    <path d="M1460 82 l-6 30 l14 -6 l10 12 l0 -32z"/>
+  </g>
+  <g fill="#F4BCAD" opacity="0.8">
+    <circle cx="280" cy="192" r="5"/><circle cx="520" cy="210" r="5"/><circle cx="1110" cy="104" r="5"/><circle cx="1350" cy="96" r="5"/>
+  </g>
+
+  <rect width="1600" height="900" filter="url(#paper)" fill="#FFFFFF"/>
+</svg>

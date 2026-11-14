@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1700" width="1200" height="1700">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBF8F3"/><stop offset="1" stop-color="#FBE4DC"/></linearGradient></defs>
+<rect width="1200" height="1700" fill="url(#g)"/>
+<rect x="60" y="60" width="1080" height="1580" fill="none" stroke="#C9A86A" stroke-width="3"/>
+<g fill="#F4BCAD" opacity="0.7"><circle cx="220" cy="1350" r="60"/><circle cx="320" cy="1420" r="40"/><circle cx="960" cy="1300" r="70"/><circle cx="880" cy="1440" r="36"/></g>
+<g fill="#8C7350" opacity="0.6"><circle cx="270" cy="1440" r="26"/><circle cx="1010" cy="1400" r="30"/></g>
+<g font-family="serif" text-anchor="middle" fill="#2D3333">
+<text x="600" y="520" font-size="120">ニナとメル</text>
+<text x="600" y="650" font-size="56" fill="#A88B5E">第3話（仮）</text>
+<text x="600" y="900" font-size="44" fill="#8A8F8F">表紙イラスト準備中（仮）</text>
+</g>
+</svg>
