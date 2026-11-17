@@ -34,6 +34,7 @@ canvas:active{cursor:grabbing}
 @keyframes mk{0%,100%{margin-top:0}50%{margin-top:-8px}}
 #talk{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);z-index:6;display:none;font:inherit;font-weight:700;font-size:16px;
   border:0;border-radius:999px;padding:13px 26px;background:#e98aa4;color:#fff;box-shadow:0 8px 22px rgba(233,138,164,.45);cursor:pointer;white-space:nowrap}
+#doorMk{position:fixed;left:0;top:0;transform:translate(-50%,-100%);z-index:3;display:none;background:#fff;color:#7a5560;border-radius:999px;padding:6px 12px;font-size:14px;font-weight:700;box-shadow:0 4px 14px rgba(150,70,100,.3);white-space:nowrap;pointer-events:none;animation:mk 1.6s ease-in-out infinite}
 #doorBtn{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);z-index:6;display:none;font:inherit;font-weight:700;font-size:16px;border:0;border-radius:999px;padding:13px 26px;background:#fff;color:#c4607e;box-shadow:0 8px 22px rgba(150,70,100,.3);cursor:pointer;white-space:nowrap}
 #vn{position:fixed;inset:0;z-index:12;display:none;overflow:hidden;opacity:0;transition:opacity .45s;touch-action:manipulation}
 #vn.on{opacity:1}
@@ -129,6 +130,7 @@ canvas:active{cursor:grabbing}
 <div id="marker"></div>
 <button id="talk"></button>
 <button id="doorBtn"></button>
+<div id="doorMk">⛪ 大聖堂の入口</div>
 <div id="vn">
   <div class="bg"></div>
   <div class="card L"><img alt=""><div class="tag" style="background:#6f6a8a">ニナ</div></div>
@@ -1751,7 +1753,12 @@ function frame(now) {
     if (cw > 0.1) { const sx = (cx / cw * 0.5 + 0.5) * innerWidth, sy = (1 - (cy / cw * 0.5 + 0.5)) * innerHeight, hw = bubble.offsetWidth / 2 + 8;
       bubble.style.left = clamp(sx, hw, innerWidth - hw) + 'px'; bubble.style.top = clamp(sy, 60, innerHeight - 20) + 'px'; } }
   vnTick(VP);
-  { const near = running && !fading && !vnOpen && (inside ? pl.z > -7 : (Math.abs(pl.x) < 5 && pl.z < CFRONT + 7 && pl.z > CFRONT));
+  { const near = running && !fading && !vnOpen && (inside ? pl.z > -8 : (Math.abs(pl.x) < 9 && pl.z < CFRONT + 14 && pl.z > CFRONT - 1));
+    const dm = document.getElementById('doorMk');
+    if (!inside && running && !vnOpen && pl.z < STAIR_Z0 + 8 && pl.z > CFRONT) { const p = [0, TY + 6.2, CFRONT + 0.3];
+      const cx = VP[0] * p[0] + VP[4] * p[1] + VP[8] * p[2] + VP[12], cy = VP[1] * p[0] + VP[5] * p[1] + VP[9] * p[2] + VP[13], cw = VP[3] * p[0] + VP[7] * p[1] + VP[11] * p[2] + VP[15];
+      if (cw > 0.1) { dm.style.display = 'block'; dm.style.left = ((cx / cw * 0.5 + 0.5) * innerWidth) + 'px'; dm.style.top = ((1 - (cy / cw * 0.5 + 0.5)) * innerHeight) + 'px'; } else dm.style.display = 'none'; }
+    else dm.style.display = 'none';
     if (near && talkBtn.style.display !== 'block') { doorBtn.style.display = 'block'; doorBtn.textContent = inside ? '▶ 外に出る' : '▶ 大聖堂に入る'; } else doorBtn.style.display = 'none'; }
 }
 requestAnimationFrame(frame);
