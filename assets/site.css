@@ -1929,3 +1929,11 @@ body:has(.yk-fab) .site-footer { padding-bottom: 96px; }
 .yk-strip .react { margin-top: 14px; }
 .ykb .react, [data-ykb] .react { margin-top: 12px; }
 @media (prefers-reduced-motion: reduce) { .react__heart.is-pop svg { animation: none; } }
+
+/* village walk (3D prototype) card */
+.village-ad__card { border-color: #EBCFDA; background: linear-gradient(135deg, #FFF8FA, #F8E7EE); color: #5A4450; box-shadow: 0 18px 34px -26px rgb(150 80 110 / .5); }
+.village-ad__card:hover { box-shadow: 0 22px 40px -26px rgb(150 80 110 / .6); }
+.village-ad__card .fest-ad__en { color: #B07A90; }
+.village-ad__card .fest-ad__lead { color: #6E5862; }
+.village-ad__card .fest-ad__go { color: #C0637F; }
+.village-ad__badge { display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 999px; background: #F3D3DE; color: #A5566F; font-size: .7rem; letter-spacing: .08em; text-transform: none; vertical-align: 1px; }
