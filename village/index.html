@@ -524,7 +524,7 @@ obstacles.push({ x: -3.55, z: -8.6, r: 0.75 }, { x: 3.55, z: -8.6, r: 0.75 });
 {
   const r = rngf(33);
   for (let deg = 14; deg < 360; deg += 21) {
-    if ((deg > 68 && deg < 112) || (deg > 238 && deg < 302) || deg < 20 || deg > 340) continue;
+    if ((deg > 68 && deg < 112) || (deg > 238 && deg < 302) || (deg > 152 && deg < 208) || deg < 20 || deg > 340) continue;
     const a = deg * Math.PI / 180, w = 5.4 + r() * 1.4, d = 7.5 + r() * 2, h = 5.6 + r() * 3, rr = PR + 1.2 + d / 2;
     house(PZ[0] + Math.cos(a) * rr, PZ[1] + Math.sin(a) * rr, Math.atan2(-Math.cos(a), -Math.sin(a)), w, d, h, r, { flowery: r() < 0.5, shop: r() < 0.3 ? pick(['#f2c2cc', '#c9d5e8', '#d8cce6'], r) : null });
   }
@@ -585,7 +585,7 @@ function stall(deg, cA, goods, seed) {
   }
   obstacles.push({ x: cx, z: cz, r: 1.75 });
 }
-stall(150, hex('#f2bfca'), 'fruit', 1); stall(180, hex('#c9d5e8'), 'flower', 2); stall(210, hex('#efd9a6'), 'bake', 3);
+stall(140, hex('#f2bfca'), 'fruit', 1); stall(118, hex('#c9d5e8'), 'flower', 2); stall(222, hex('#efd9a6'), 'bake', 3);
 // plaza lamps + ribbons
 { const pts = []; for (let k = 0; k < 10; k++) { const a = (k / 10) * Math.PI * 2 + 0.31, x = PZ[0] + Math.cos(a) * (PR - 1.0), z = PZ[1] + Math.sin(a) * (PR - 1.0);
     const dg = ((a * 180 / Math.PI) % 360 + 360) % 360; if (dg > 250 && dg < 290) { pts.push(null); continue; }
@@ -697,6 +697,187 @@ tree(world, 19.5, -46.5, 1.0, 'w', 778, true, TY); obstacles.push({ x: 19.5, z: 
   for (const s of [-1, 1]) { rosesOn(world, T(s * 5.6, F, 0), 0, B + 0.2, 0.25, 1.4, 6, 18, R, 0.2); barrel(world, I, s * 4.6, F + 1.6, R, B + 0.6); }
 }
 
+
+// ================= MEL'S MANSION + NINA'S SHACK (west of plaza) =================
+const MANSION = { gateX: -46, cz: -24, wallZ0: -58, wallZ1: 10, courtX: -77.5 };
+const bedRects = []; // non-walkable rectangles inside grounds [x0,z0,x1,z1]
+{
+  const r = rngf(4040), gz = MANSION.cz;
+  const PINK = hex('#eaa9b6'), WALLC = hex('#fcf4ef'), TRIM = hex('#f2e5dd'), GLASS = hex('#cfdaee'), GOLD = C.gold, HEDGE = hex('#a3c28a');
+  // ---- path from plaza
+  flatQuad(world, -46.5, gz - 2.2, -12.5, gz + 2.2, 0.011, C.cobble, 1);
+  for (const s of [-1, 1]) box(world, I, -29.5, 0, gz + s * 2.3, 34, 0.07, 0.12, C.stone);
+  for (let x = -18; x > -44; x -= 8) for (const s of [-1, 1]) { lampPost(world, x, gz + s * 2.75); obstacles.push({ x, z: gz + s * 2.75, r: 0.25 }); }
+  for (let x = -18; x > -40; x -= 8) for (const s of [-1, 1]) swag(world, [x, 2.9, gz + s * 2.75], [x - 8, 2.9, gz + s * 2.75], 0.6, 200 + x);
+  for (let x = -16; x > -44; x -= 2.2) for (const s of [-1, 1]) { const z = gz + s * 3.6; blob(world, I, x, 0.5, z, 0.8, 0.55, 0.6, C.leaf, 6, 0, 0.3, x * s);
+    for (let q = 0; q < 4; q++) flower(world, I, x + (r() - .5) * 1.2, 0.8 + r() * 0.3, z + (r() - .5) * 0.6, 0.1, pick(C.rose, r)); }
+  for (const [x, s] of [[-22, 1], [-30, -1], [-38, 1], [-26, -1], [-42, -1]]) tree(world, x, gz + s * 6.5, 1.1, pick(['w', 'p'], r), 900 + x, true);
+  // signpost at the fork
+  { const sx = -14.6, sz = gz - 3.0; cyl(world, I, sx, 0, sz, 0.08, 0.07, 2.6, 6, hex('#9c8170'));
+    const bd = (y, col, len) => { box(world, I, sx - len / 2, y, sz, len, 0.32, 0.06, col); world.tri([sx - len, y, sz + 0.031], [sx - len, y + 0.32, sz + 0.031], [sx - len - 0.25, y + 0.16, sz + 0.031], col, 0, [sx - len + 1, y, sz - 1]); };
+    bd(2.05, hex('#f3c3cf'), 1.1); bd(1.6, hex('#b59a84'), 0.9); flower(world, I, sx, 2.65, sz, 0.12, C.rose[0]); obstacles.push({ x: sx, z: sz, r: 0.25 }); }
+
+  // ---- walls (balustrade) + golden gate
+  balustrade([MANSION.gateX, MANSION.wallZ0], [MANSION.gateX, gz - 3.0], 0);
+  balustrade([MANSION.gateX, gz + 3.0], [MANSION.gateX, MANSION.wallZ1], 0);
+  balustrade([MANSION.gateX, MANSION.wallZ0], [-112, MANSION.wallZ0], 0);
+  balustrade([MANSION.gateX, MANSION.wallZ1], [-112, MANSION.wallZ1], 0);
+  for (const s of [-1, 1]) {
+    const pz = gz + s * 3.15;
+    box(world, I, MANSION.gateX, 0, pz, 1.3, 4.6, 1.3, WALLC, 8); box(world, I, MANSION.gateX, 4.6, pz, 1.5, 0.3, 1.5, TRIM);
+    cyl(world, I, MANSION.gateX, 4.9, pz, 0.3, 0.5, 0.6, 10, GOLD); blob(world, I, MANSION.gateX, 5.75, pz, 0.45, 0.5, 0.45, GOLD, 0, 1); cyl(world, I, MANSION.gateX, 6.2, pz, 0.12, 0, 0.6, 6, GOLD);
+    rosesOn(world, T(MANSION.gateX, pz, Math.PI / 2), 0, 0.2, 0.68, 1.2, 3.6, 7, r);
+    // open gate leaf (swung inward, along -x)
+    const lz = gz + s * 2.35;
+    for (let k = 0; k <= 12; k++) { const x = MANSION.gateX - 0.6 - k * 0.24; box(world, I, x, 0.2, lz, 0.05, 3.2 + Math.sin(k / 12 * Math.PI) * 0.6, 0.05, GOLD); }
+    for (const y of [0.2, 1.4, 3.3]) box(world, I, MANSION.gateX - 2.06, y, lz, 2.95, 0.07, 0.07, GOLD);
+    for (let k = 0; k < 3; k++) roundArchBand(world, T(MANSION.gateX - 1.0 - k * 0.9, lz, 0), 0, 2.3, 0, 0.22, 0.29, 0.05, 8, GOLD);
+    obstacles.push({ x: MANSION.gateX, z: pz, r: 0.9 });
+  }
+  roundArchBand(world, T(MANSION.gateX, gz, Math.PI / 2), 0, 4.8, 0, 2.9, 3.05, 0.12, 16, GOLD);
+  blob(world, I, MANSION.gateX, 7.95, gz, 0.4, 0.4, 0.15, GOLD, 0, 1);
+
+  // ---- garden paving
+  flatQuad(world, MANSION.courtX - 1.5, gz - 2.6, MANSION.gateX, gz + 2.6, 0.013, hex('#f4e9e4'), 11);
+  flatQuad(world, -65.6, MANSION.wallZ0 + 1, -60.4, MANSION.wallZ1 - 1, 0.012, hex('#f4e9e4'), 11);
+  flatQuad(world, -83, MANSION.wallZ0 + 1, MANSION.courtX + 0.5, MANSION.wallZ1 - 1, 0.012, hex('#f4e9e4'), 11);
+  // central fountain plaza
+  flatDisc(world, -63, gz, 0.016, 8.4, 56, hex('#f1e5df'), 11);
+  flatDisc(world, -63, gz, 0.02, 7.0, 56, hex('#f6ece6'), 11);
+  for (let k = 0; k < 24; k++) { const a = k / 24 * Math.PI * 2; const x = -63 + Math.cos(a) * 5.7, z = gz + Math.sin(a) * 5.7;
+    blob(world, I, x, 0.35, z, 0.75, 0.4, 0.75, HEDGE, 6, 0, 0.3, k); for (let q = 0; q < 3; q++) flower(world, I, x + (r() - .5) * .9, 0.65 + r() * .15, z + (r() - .5) * .9, 0.1, pick(C.rose, r)); }
+  fountain(world, -63, gz, 0, 1.3); obstacles.push({ x: -63, z: gz, r: 6.4 });
+  // side fountains on cross avenue
+  for (const fz of [gz - 21, gz + 21]) { flatDisc(world, -63, fz, 0.018, 4.4, 40, hex('#f1e5df'), 11); fountain(world, -63, fz, 0, 0.75); obstacles.push({ x: -63, z: fz, r: 2.6 }); }
+  // parterre beds
+  function bed(x0, z0, x1, z1) {
+    const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, w = x1 - x0, d = z1 - z0;
+    box(world, I, cx, 0, z0 + 0.3, w, 0.55, 0.6, HEDGE, 6); box(world, I, cx, 0, z1 - 0.3, w, 0.55, 0.6, HEDGE, 6);
+    box(world, I, x0 + 0.3, 0, cz, 0.6, 0.55, d, HEDGE, 6); box(world, I, x1 - 0.3, 0, cz, 0.6, 0.55, d, HEDGE, 6);
+    flatQuad(world, x0 + 0.5, z0 + 0.5, x1 - 0.5, z1 - 0.5, 0.01, hex('#b9cf98'), 2);
+    for (let x = x0 + 1.5; x < x1 - 1; x += 1.7) for (let z = z0 + 1.5; z < z1 - 1; z += 1.7) {
+      blob(world, I, x, 0.45, z, 0.62, 0.45, 0.62, pick([C.leaf, HEDGE], r), 6, 0, 0.35, x * 3 + z);
+      const col = (Math.floor((x - x0) / 3.4) + Math.floor((z - z0) / 3.4)) % 3 === 0 ? C.white : pick(C.rose, r);
+      for (let q = 0; q < 4; q++) flower(world, I, x + (r() - .5) * .8, 0.72 + r() * .2, z + (r() - .5) * .8, 0.11, col);
+    }
+    for (const [x, z] of [[x0 + 0.3, z0 + 0.3], [x1 - 0.3, z0 + 0.3], [x0 + 0.3, z1 - 0.3], [x1 - 0.3, z1 - 0.3]]) { cypress(world, x, z, 4.2); }
+    bedRects.push([x0 - 0.2, z0 - 0.2, x1 + 0.2, z1 + 0.2]);
+  }
+  bed(-58.5, gz - 26, -48.5, gz - 6.5); bed(-58.5, gz + 9.0, -48.5, gz + 18.5);
+  bed(-76.5, gz - 30, -67.5, gz - 9.5); bed(-76.5, gz + 9.5, -67.5, gz + 30);
+  bed(-76.5, gz - 6.8, -71.5, gz - 3.4); bed(-76.5, gz + 3.4, -71.5, gz + 6.8);
+  // cypress rows along the avenue
+  for (let x = -49; x > -59; x -= 3.3) for (const s of [-1, 1]) { cypress(world, x, gz + s * 3.6, 5.5); obstacles.push({ x, z: gz + s * 3.6, r: 0.5 }); }
+  // gazebo (front-left corner)
+  { const gx = -52.5, gzz = gz - 31.5, n = 8, rr = 2.4;
+    cyl(world, I, gx, 0, gzz, 3.0, 3.0, 0.3, 16, WALLC);
+    for (let k = 0; k < n; k++) { const a = k / n * Math.PI * 2; cyl(world, I, gx + Math.cos(a) * rr, 0.3, gzz + Math.sin(a) * rr, 0.13, 0.13, 3.0, 8, WALLC);
+      rosesOn(world, T(gx + Math.cos(a) * rr, gzz + Math.sin(a) * rr, Math.atan2(Math.cos(a), Math.sin(a))), 0, 0.3, 0.1, 0.3, 2.6, 2, r); }
+    cyl(world, I, gx, 3.3, gzz, 2.9, 2.9, 0.35, 16, TRIM);
+    blob(world, I, gx, 3.6, gzz, 2.9, 2.2, 2.9, PINK, 0, 1);
+    cyl(world, I, gx, 5.6, gzz, 0.35, 0.25, 0.7, 8, GOLD); cyl(world, I, gx, 6.3, gzz, 0.25, 0, 0.9, 6, GOLD);
+    obstacles.push({ x: gx, z: gzz, r: 3.0 }); }
+  // corner gazebo on palace side
+  for (const s of [-1, 1]) { const gx = -80.5, gzz = gz + s * 30; cyl(world, I, gx, 0, gzz, 2.4, 2.4, 0.3, 14, WALLC);
+    for (let k = 0; k < 6; k++) { const a = k / 6 * Math.PI * 2; cyl(world, I, gx + Math.cos(a) * 1.9, 0.3, gzz + Math.sin(a) * 1.9, 0.11, 0.11, 2.6, 6, WALLC); }
+    blob(world, I, gx, 3.0, gzz, 2.4, 1.8, 2.4, PINK, 0, 1); cyl(world, I, gx, 4.6, gzz, 0.2, 0, 1.0, 6, GOLD); obstacles.push({ x: gx, z: gzz, r: 2.5 }); }
+  // urns on the wall
+  for (let z = MANSION.wallZ0 + 3.2; z < MANSION.wallZ1; z += 6.4) { if (Math.abs(z - gz) < 4) continue; cyl(world, I, MANSION.gateX, 1.15, z, 0.18, 0.32, 0.38, 10, WALLC);
+    blob(world, I, MANSION.gateX, 1.7, z, 0.42, 0.3, 0.42, C.leaf, 6, 0, 0.3, z); for (let q = 0; q < 6; q++) flower(world, I, MANSION.gateX + (r() - .5) * .6, 1.8 + r() * .2, z + (r() - .5) * .6, 0.09, pick(C.rose, r)); }
+
+  // ---- PALACE (local frame: +z faces the gate / east)
+  const P = T(-96, gz, Math.PI / 2);
+  box(world, P, 0, 0, 0, 86, 2.0, 28, hex('#efe4dd'), 8);
+  for (let i = 0; i < 8; i++) { const z0 = 14, z1 = 14 + (8 - i) * 0.5; box(world, P, 0, 0, (z0 + z1) / 2, 18 - i * 0.3, (i + 1) * 0.25, z1 - z0, i % 2 ? C.stone : C.stoneW); }
+  for (const s of [-1, 1]) { const a = P(s * 9.5, 0, 14.2), b = P(s * 43, 0, 14.2); balustrade([a[0], a[2]], [b[0], b[2]], 2.0); }
+  // main block
+  box(world, P, 0, 2, 0, 30, 18, 20, WALLC);
+  for (const y of [8.4, 14.2, 19.6]) box(world, P, 0, 2 + y - 2, 0, 30.4, 0.35, 20.4, TRIM);
+  roof(world, P, 0, 20, 0, 30.8, 21.2, 9.5, PINK, 9, WALLC);
+  for (let k = -2; k <= 2; k++) { const p = P(k * 6, 0, 0); cyl(world, I, p[0], 29.2, p[2], 0.45, 0, k === 0 ? 5 : 3.2, 6, GOLD); }
+  // central gable front
+  box(world, P, 0, 2, 11.5, 14, 22, 3, WALLC);
+  { const p = P(0, 0, 11.5); roof(world, T(p[0], p[2], Math.PI), 0, 24, 0, 5.0, 14.8, 8.5, PINK, 9, WALLC); }
+  arch(world, P, 0, 7.0, 13.02, 8.2, 8.5, GLASS, 13);
+  for (const x of [-2.6, 0, 2.6]) box(world, P, x, 7, 13.05, 0.18, 8.5, 0.06, TRIM);
+  box(world, P, 0, 11.2, 13.05, 8.0, 0.2, 0.06, TRIM);
+  disc(world, P, 0, 27.0, 14.03, 2.0, 24, TRIM); disc(world, P, 0, 27.0, 14.06, 1.65, 24, GLASS, 13); disc(world, P, 0, 27.0, 14.09, 0.45, 12, GOLD, 7);
+  arch(world, P, 0, 2, 13.05, 5.6, 3.4, TRIM); arch(world, P, 0, 2, 13.1, 4.6, 3.2, hex('#f7eee9')); box(world, P, 0, 2, 13.12, 3.8, 3.3, 0.1, hex('#c99f78'));
+  for (const s of [-1, 1]) { box(world, P, s * 0.95, 2.6, 13.18, 1.3, 0.06, 0.02, GOLD, 7); box(world, P, s * 0.95, 4.2, 13.18, 1.3, 0.06, 0.02, GOLD, 7); }
+  for (const s of [-1, 1]) { box(world, P, s * 7.2, 2, 13.1, 0.9, 25, 0.9, TRIM); const p = P(s * 7.2, 0, 13.1); cyl(world, I, p[0], 27, p[2], 0.55, 0, 4.0, 6, GOLD); }
+  rosesOn(world, P, -4.5, 2.2, 13.0, 1.2, 5, 12, r, 0.2); rosesOn(world, P, 4.5, 2.2, 13.0, 1.2, 5, 12, r, 0.2);
+  // wings
+  for (const s of [-1, 1]) {
+    box(world, P, s * 29, 2, 0, 28, 13, 16, WALLC);
+    box(world, P, s * 29, 8.4, 0, 28.3, 0.3, 16.3, TRIM); box(world, P, s * 29, 14.6, 0, 28.3, 0.4, 16.3, TRIM);
+    roof(world, P, s * 29, 15, 0, 28.6, 17.2, 6.5, PINK, 9, WALLC);
+    for (let k = 0; k < 8; k++) { const x = s * (16.8 + k * 3.35); arch(world, P, x, 3.6, 8.02, 1.6, 2.8, GLASS, 13); arch(world, P, x, 9.4, 8.02, 1.5, 2.6, GLASS, 13);
+      box(world, P, x, 3.3, 8.2, 2.0, 0.25, 0.5, TRIM); }
+    for (let k = 0; k < 5; k++) { const p = P(s * (18 + k * 6), 0, 0); cyl(world, I, p[0], 21.0, p[2], 0.35, 0, 2.8, 6, GOLD); }
+    for (let k = 0; k < 4; k++) { const x = s * (19 + k * 7); box(world, P, x, 15, 6.0, 1.6, 2.2, 1.6, WALLC); const p = P(x, 0, 6.0); roof(world, T(p[0], p[2], Math.PI), 0, 17.2, 0, 1.9, 1.9, 1.4, PINK, 9, WALLC); arch(world, P, x, 15.4, 6.81, 0.8, 1.0, GLASS, 13); }
+    // junction towers
+    { const p = P(s * 15.6, 0, 9.4); cyl(world, I, p[0], 2, p[2], 2.6, 2.6, 26, 14, WALLC); for (const y of [10, 16, 22]) cyl(world, I, p[0], y, p[2], 2.8, 2.8, 0.35, 14, TRIM);
+      cyl(world, I, p[0], 28, p[2], 3.3, 0, 9.5, 14, PINK, 9); blob(world, I, p[0], 37.6, p[2], 0.35, 0.35, 0.35, GOLD, 0, 1); cyl(world, I, p[0], 37.8, p[2], 0.12, 0, 1.6, 6, GOLD);
+      for (let k = 0; k < 3; k++) { const a = k * 2.1 + 0.4; arch(world, T(p[0] + Math.sin(Math.PI / 2 + a) * 2.62, p[2] + Math.cos(Math.PI / 2 + a) * 2.62, Math.PI / 2 + a), 0, 18, 0, 0.9, 2.0, GLASS, 13); } }
+    // small front towers
+    for (const lx of [24, 36]) { const p = P(s * lx, 0, 8.6); cyl(world, I, p[0], 2, p[2], 1.4, 1.4, 17.5, 10, WALLC); cyl(world, I, p[0], 19.5, p[2], 1.8, 0, 5.5, 10, PINK, 9); cyl(world, I, p[0], 24.8, p[2], 0.1, 0, 1.4, 6, GOLD); }
+    // rotunda + glass dome
+    { const p = P(s * 47, 0, 1); cyl(world, I, p[0], 0, p[2], 7.6, 7.6, 2.0, 28, hex('#efe4dd'), 8); cyl(world, I, p[0], 2, p[2], 7.0, 7.0, 12, 28, WALLC);
+      cyl(world, I, p[0], 8.2, p[2], 7.2, 7.2, 0.3, 28, TRIM); cyl(world, I, p[0], 13.6, p[2], 7.3, 7.3, 0.45, 28, TRIM);
+      for (let k = 0; k < 14; k++) { const a = k / 14 * Math.PI * 2; const wx = p[0] + Math.cos(a) * 7.02, wz = p[2] + Math.sin(a) * 7.02, th = Math.atan2(Math.cos(a), Math.sin(a));
+        const tf = T(wx, wz, th); arch(world, tf, 0, 3.4, 0, 1.4, 3.0, GLASS, 13); arch(world, tf, 0, 9.0, 0, 1.3, 2.6, GLASS, 13); }
+      blob(world, I, p[0], 14.0, p[2], 7.1, 5.6, 7.1, hex('#dfe8f3'), 13, 1);
+      for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2; let prev = null; for (let j = 0; j <= 6; j++) { const ph = j / 6 * Math.PI / 2; const q = [p[0] + Math.cos(a) * Math.cos(ph) * 7.15, 14 + Math.sin(ph) * 5.65, p[2] + Math.sin(a) * Math.cos(ph) * 7.15]; if (prev) tube(world, I, prev, q, 0.09, 4, GOLD); prev = q; } }
+      cyl(world, I, p[0], 19.4, p[2], 0.9, 0.9, 1.5, 10, WALLC); cyl(world, I, p[0], 20.9, p[2], 1.2, 0, 2.6, 10, GOLD); }
+  }
+  // ---- NINA'S SHACK (front-right corner of the garden)
+  { const hx = -52.8, hz = gz + 26.6, H = T(hx, hz, Math.PI); // front faces the avenue (-z)
+    const PL = [hex('#9b8574'), hex('#a8927e'), hex('#8d7867'), hex('#b39c86'), hex('#86735f')];
+    flatDisc(world, hx, hz - 0.6, 0.014, 4.6, 20, hex('#cdb79f'), 0);
+    for (const [x, z] of [[-1.7, -1.5], [1.7, -1.5], [-1.7, 1.5], [1.7, 1.5]]) box(world, H, x, 0, z, 0.35, 0.3, 0.35, C.stone);
+    box(world, H, 0, 0.3, 0, 3.8, 0.18, 3.4, hex('#8f7a68'));
+    // plank walls (uneven)
+    for (let k = 0; k < 16; k++) { const x = -1.8 + k * 0.24, h = 2.3 + Math.sin(k * 1.7) * 0.12 - k * 0.025; box(world, H, x, 0.48, -1.62, 0.23, h, 0.08, pick(PL, r)); }
+    for (const s of [-1, 1]) for (let k = 0; k < 14; k++) { const z = -1.6 + k * 0.24, h = 2.3 - (s > 0 ? 0.35 : 0) - k * 0.02 + Math.sin(k) * 0.06; box(world, H, s * 1.86, 0.48, z, 0.08, h, 0.23, pick(PL, r)); }
+    for (let k = 0; k < 16; k++) { const x = -1.8 + k * 0.24; if (x > -0.75 && x < 0.3) continue; if (x > 0.65 && x < 1.5) { box(world, H, x, 0.48, 1.62, 0.23, 0.75, 0.08, pick(PL, r)); box(world, H, x, 1.95, 1.62, 0.23, 0.55 - k * 0.02, 0.08, pick(PL, r)); continue; }
+      box(world, H, x, 0.48, 1.62, 0.23, 2.15 - k * 0.03 + Math.sin(k * 2.3) * 0.08, 0.08, pick(PL, r)); }
+    box(world, H, 1.07, 1.23, 1.6, 0.85, 0.72, 0.03, hex('#4f4a52'));
+    tube(world, H, [0.66, 1.25, 1.68], [1.48, 1.93, 1.68], 0.035, 4, hex('#a8927e')); tube(world, H, [0.66, 1.93, 1.68], [1.48, 1.25, 1.68], 0.035, 4, hex('#a8927e'));
+    // door ajar
+    { const p = H(-0.75, 0, 1.62); const D = T(p[0], p[2], Math.PI + 0.55); for (let k = 0; k < 4; k++) box(world, D, 0.13 + k * 0.25, 0.5, 0.0, 0.24, 1.95, 0.06, pick(PL, r)); tube(world, D, [0.05, 0.75, 0.05], [1.0, 2.2, 0.05], 0.04, 4, hex('#7d6a58')); }
+    // sagging shed roof with patches
+    { const y0 = 4.0, y1 = 2.75; const q = (x, z) => H(x, z > 0 ? y1 - 0.06 * Math.cos(x) : y0, z);
+      for (let i = 0; i < 6; i++) { const x0 = -2.2 + i * 0.75, x1 = x0 + 0.78, col = i === 2 ? hex('#b78f80') : i === 4 ? hex('#a9a9b1') : pick([hex('#9a8a7e'), hex('#8c7c70')], r);
+        const sag = (x) => -0.12 * Math.sin((x + 2.2) / 4.4 * Math.PI);
+        world.quad(H(x0, y0 + sag(x0), -2.0), H(x1, y0 + sag(x1), -2.0), H(x1, y1 + sag(x1), 2.1), H(x0, y1 + sag(x0), 2.1), col, 0, H((x0 + x1) / 2, 0, 0)); }
+      box(world, H, 0.4, 3.18, 0.8, 0.9, 0.05, 0.7, hex('#c9a27c')); box(world, H, -1.2, 3.65, -0.9, 0.6, 0.05, 0.5, hex('#9fa8b4')); }
+    for (const s2 of [-1, 1]) world.quad(H(s2 * 1.9, 2.6, -1.66), H(s2 * 1.9, 2.75, 1.66), H(s2 * 1.9, 2.75, 2.0), H(s2 * 1.9, 3.95, -1.9), hex('#8d7867'), 0, H(0, 2, 0));
+    box(world, H, 0, 2.7, -1.62, 3.8, 1.25, 0.08, hex('#9b8574'));
+    // crooked stovepipe
+    tube(world, H, [1.1, 3.4, -0.8], [1.15, 4.4, -0.85], 0.1, 6, hex('#7d756f')); tube(world, H, [1.15, 4.4, -0.85], [1.45, 4.75, -0.8], 0.1, 6, hex('#7d756f'));
+    // props: firewood, bucket, crate, cans, laundry line, hammock, weeds
+    for (let k = 0; k < 9; k++) { const y = 0.12 + Math.floor(k / 3) * 0.2, z = -0.6 + (k % 3) * 0.22 + (Math.floor(k / 3) % 2) * 0.1; tube(world, H, [-2.15, y, z], [-2.15 - 0.0, y, z].map((v, i) => i === 0 ? v - 0.9 : v), 0.1, 6, hex('#b48d6e')); }
+    cyl(world, H, 2.3, 0, 1.4, 0.2, 0.24, 0.4, 8, hex('#9aa0a6')); box(world, H, 2.4, 0, 2.3, 0.6, 0.45, 0.5, hex('#c4a57f'));
+    for (let k = 0; k < 7; k++) { const cx = (r() - 0.5) * 3.2, cz2 = 2.1 + r() * 1.2; const tf = T(...H(cx, 0, cz2).filter((_, i) => i !== 1), r() * 6);
+      if (k % 2) { tube(world, tf, [-0.1, 0.07, 0], [0.1, 0.07, 0], 0.065, 8, hex('#e3e5e8')); tube(world, tf, [-0.03, 0.07, 0], [0.03, 0.07, 0], 0.067, 8, hex('#f2d36a')); }
+      else { cyl(world, tf, 0, 0, 0, 0.065, 0.065, 0.24, 8, hex('#e3e5e8')); cyl(world, tf, 0, 0.08, 0, 0.067, 0.067, 0.08, 8, hex('#f2d36a'), 0, false); } }
+    // laundry line between shack corner and a pole
+    { const a = H(-1.9, 2.0, -1.7), b = H(-1.9, 2.0, -5.6); cyl(world, I, b[0], 0, b[2], 0.06, 0.05, 2.1, 6, hex('#9c8170'));
+      tube(world, I, a, b, 0.012, 3, hex('#d8d0c8'));
+      const cloth = (t, w, h, col) => { const p = [a[0] + (b[0] - a[0]) * t, 2.0, a[2] + (b[2] - a[2]) * t]; world.quad([p[0], 2.0, p[2] - w / 2], [p[0], 2.0, p[2] + w / 2], [p[0] + 0.02, 2.0 - h, p[2] + w / 2], [p[0] + 0.02, 2.0 - h, p[2] - w / 2], col, 4); };
+      cloth(0.25, 0.75, 0.8, hex('#48434c')); cloth(0.52, 0.55, 0.7, hex('#f4eee4')); cloth(0.75, 0.3, 0.35, hex('#48434c')); }
+    // hammock to a scraggly tree
+    { const tp = H(3.6, 0, -1.8); cyl(world, I, tp[0], 0, tp[2], 0.2, 0.14, 2.8, 7, C.trunk); blob(world, I, tp[0], 3.4, tp[2], 1.3, 1.0, 1.3, hex('#9fb985'), 6, 1, 0.5, 77); blob(world, I, tp[0] + 0.6, 2.9, tp[2] - 0.4, 0.8, 0.6, 0.8, hex('#93ad7b'), 6, 0, 0.5, 78);
+      const a = H(1.95, 1.5, -1.2), b = H(3.45, 1.5, -1.7); const n = 8; let prevL = null, prevR = null;
+      for (let i = 0; i <= n; i++) { const t = i / n, sag = Math.sin(t * Math.PI) * 0.55; const p = [a[0] + (b[0] - a[0]) * t, 1.5 - sag, a[2] + (b[2] - a[2]) * t];
+        const L = [p[0], p[1], p[2] - 0.28], Rr = [p[0], p[1], p[2] + 0.28]; if (prevL) world.quad(prevL, prevR, Rr, L, hex('#e8d9c0'), 4); prevL = L; prevR = Rr; }
+      obstacles.push({ x: tp[0], z: tp[2], r: 0.4 }); }
+    for (let k = 0; k < 18; k++) { const p = H((r() - 0.5) * 6, 0, (r() - 0.5) * 5); if (Math.abs(p[0] - hx) < 2 && Math.abs(p[2] - hz) < 1.8) continue; blob(world, I, p[0], 0.18, p[2], 0.12, 0.3, 0.12, pick([hex('#9fb985'), hex('#b4c792')], r), 6, 0); }
+    bedRects.push([hx - 2.1, hz - 1.95, hx + 2.1, hz + 1.95]);
+    MANSION.hut = [hx, hz];
+  }
+}
+
 // distant land: hills with fields, far houses, trees
 { const r = rngf(88);
   for (let k = 0; k < 22; k++) { const a = k / 22 * Math.PI * 2 + r() * 0.2, d = 150 + r() * 110;
@@ -707,11 +888,12 @@ tree(world, 19.5, -46.5, 1.0, 'w', 778, true, TY); obstacles.push({ x: 19.5, z: 
     if (Math.abs(x) < 13.5 && z > -14 && z < 52) continue;
     if (Math.hypot(x - PZ[0], z - PZ[1]) < 27) continue;
     if (Math.abs(x) < 25 && z < -36 && z > -100) continue;
+    if (x < -10 && x > -125 && z > -68 && z < 20) continue;
     const near = Math.hypot(x, z - 10) < 50;
     if (r() < 0.25) cypress(world, x, z, 6 + r() * 4); else tree(world, x, z, 0.9 + r() * 0.6, pick(['w', 'g', 'g', 'p', 'w'], r), 1000 + tries, near);
     placed++; }
   for (let k = 0; k < 26; k++) { const a = r() * Math.PI * 2, d = 55 + r() * 60, x = Math.cos(a) * d, z = Math.sin(a) * d;
-    if (Math.abs(x) < 26 && z < -30) continue; if (Math.abs(x) < 14 && z > -14) continue;
+    if (Math.abs(x) < 26 && z < -30) continue; if (Math.abs(x) < 14 && z > -14) continue; if (x < -10 && x > -125 && z > -70 && z < 22) continue;
     house(x, z, r() * 6.28, 5 + r() * 2, 6 + r() * 2, 5 + r() * 2.5, r, {}); }
 }
 
@@ -880,7 +1062,7 @@ const mobs = [], mobsIn = [];
   // stationary crowd with raised lilies (plaza + terrace)
   for (let i = 0; i < 8; i++) { const x0 = -4.2 + i * 1.2 + (i % 2) * 0.3, z0 = -16.2 - (i % 2) * 1.0; mk({ type: 'idle', x0, z0, a0: Math.atan2(PZ[0] - x0, PZ[1] - z0) + Math.PI, raised: true }); }
   for (let i = 0; i < 12; i++) { const s2 = i < 6 ? -1 : 1, k = i % 6, x0 = s2 * (4.6 + (k % 3) * 1.4), z0 = -47.6 - Math.floor(k / 3) * 1.4; mk({ type: 'idle', x0, z0, a0: 0, raised: k % 2 === 0 }); }
-  for (const deg of [150, 180, 210]) { const a = deg * Math.PI / 180; mk({ type: 'idle', x0: PZ[0] + Math.cos(a) * 8.7, z0: PZ[1] + Math.sin(a) * 8.7, a0: Math.atan2(Math.cos(a), Math.sin(a)) }); }
+  for (const deg of [140, 118, 222]) { const a = deg * Math.PI / 180; mk({ type: 'idle', x0: PZ[0] + Math.cos(a) * 8.7, z0: PZ[1] + Math.sin(a) * 8.7, a0: Math.atan2(Math.cos(a), Math.sin(a)) }); }
   mk({ type: 'idle', x0: -2.0, z0: 36.5, a0: Math.PI / 2 }); mk({ type: 'idle', x0: 2.0, z0: 18, a0: -Math.PI / 2 }); mk({ type: 'idle', x0: -1.5, z0: 4, a0: Math.PI / 2 });
   mk({ type: 'path', pts: [[-9, -46], [-9, -59], [8, -59], [8, -46]], sp: 0.7, t: 3 }); mk({ type: 'path', pts: [[9, -47], [9, -58]], sp: 0.6, t: 1 });
   // interior: seated in pews facing altar, and standing near altar
@@ -933,7 +1115,10 @@ function walkable(x, z) {
   const inPlaza = Math.hypot(x - PZ[0], z - PZ[1]) < PR - 0.8;
   const inStairs = Math.abs(x) < 4.4 && z <= STAIR_Z0 + 0.6 && z >= STAIR_Z1 - 0.2;
   const inTerr = z < STAIR_Z1 && z > CFRONT - 0.2 && Math.abs(x) < 21.4;
-  if (!(inRoad || inPlaza || inStairs || inTerr)) return false;
+  const inPath = x < -12 && x > -46.9 && Math.abs(z - MANSION.cz) < 2.2;
+  const inGrounds = x <= -46.4 && x > MANSION.courtX && z > MANSION.wallZ0 + 0.8 && z < MANSION.wallZ1 - 0.8;
+  if (!(inRoad || inPlaza || inStairs || inTerr || inPath || inGrounds)) return false;
+  if (inGrounds) for (const b of bedRects) if (x > b[0] - 0.25 && x < b[2] + 0.25 && z > b[1] - 0.25 && z < b[3] + 0.25) return false;
   if (inTerr && z < CFRONT + 0.5 && Math.abs(x) > 1.8) return false;
   if (inTerr && !inStairs && z > STAIR_Z1 - 0.75) return false;
   for (const o of obstacles) if ((x - o.x) ** 2 + (z - o.z) ** 2 < (o.r + 0.3) ** 2) return false;
@@ -1181,9 +1366,11 @@ joyEl.addEventListener('pointerup', joyEnd); joyEl.addEventListener('pointercanc
 // ================= zones / speech =================
 const ZONES = {
   road: ['石畳の道', '花とパンの匂いがする通り'], plaza: ['噴水の広場', '献上祭の準備がすすむ'], hall: ['共同食堂', '村のみんなが集まるごはんの場所'],
-  terrace: ['大聖堂のテラス', '村をみおろす白い階段の上'], inside: ['大聖堂', 'ひかりの差しこむ祈りの場所'] };
+  terrace: ['大聖堂のテラス', '村をみおろす白い階段の上'], path: ['お屋敷への小道', '広場から、村のはずれへ'], mansion: ['メルのお屋敷', '聖女候補さまのお住まい'], hut: ['ニナの小屋', 'お屋敷の庭の、すみっこ'], inside: ['大聖堂', 'ひかりの差しこむ祈りの場所'] };
 function zoneOf(x, z) {
   if (x > 300) return 'inside';
+  if (x < -46.4) return Math.hypot(x - MANSION.hut[0], z - MANSION.hut[1]) < 7 ? 'hut' : 'mansion';
+  if (x < -15 && Math.abs(z - MANSION.cz) < 3) return 'path';
   if (z < STAIR_Z0 - 1) return 'terrace';
   if (Math.hypot(x - PZ[0], z - PZ[1]) < PR) return x > 8 ? 'hall' : 'plaza';
   return 'road';
