@@ -1008,17 +1008,19 @@ function headGeo(seed) {
   const band = (cx, cy, rr, th, a0, a1, n, col, lift) => { for (let i = 0; i < n; i++) { const t0 = a0 + (a1 - a0) * i / n, t1 = a0 + (a1 - a0) * (i + 1) / n;
     const p = (rad, t) => S(cx + Math.cos(t) * rad, cy + Math.sin(t) * rad, lift);
     g.quad(p(rr - th / 2, t0), p(rr + th / 2, t0), p(rr + th / 2, t1), p(rr - th / 2, t1), col, 0, [cx, cy, 0]); } };
-  // happy closed eyes (∩) and raised brows
-  for (const s of [-1, 1]) { band(s * 0.085, 0.25, 0.045, 0.017, 0.25, Math.PI - 0.25, 7, EYE, 0.007); band(s * 0.09, 0.305, 0.05, 0.01, 0.5, Math.PI - 0.5, 5, hex('#8a6a5a'), 0.007); }
-  // big open laughing mouth (D shape)
-  const mw = 0.095, my = 0.185, mh = 0.11, mp = [];
-  for (let i = 0; i <= 14; i++) { const t = Math.PI + Math.PI * i / 14; mp.push([Math.cos(t) * mw, my + Math.sin(t) * mh]); }
-  shape(mp.reverse(), MOUTH, 0.006);
-  const tp = []; for (let i = 0; i <= 10; i++) { const t = Math.PI + Math.PI * i / 10; tp.push([Math.cos(t) * 0.055, my - 0.065 + Math.sin(t) * 0.03 + 0.012]); }
-  shape([[-0.06, my - 0.05], ...tp.reverse().slice(1, -1), [0.06, my - 0.05]].reverse(), TONGUE, 0.008);
-  shape([[-0.082, my - 0.004], [0.082, my - 0.004], [0.075, my - 0.024], [-0.075, my - 0.024]], C.white, 0.008);
-  // blush
-  for (const s of [-1, 1]) { const bp = []; for (let i = 0; i < 10; i++) { const t = i / 10 * Math.PI * 2; bp.push([s * 0.155 + Math.cos(t) * 0.04, 0.2 + Math.sin(t) * 0.022]); } shape(bp, hex('#f4a8b6'), 0.007); }
+  // happy closed eyes (∩) — thick, sticker-like
+  for (const s of [-1, 1]) band(s * 0.1, 0.262, 0.052, 0.026, 0.28, Math.PI - 0.28, 9, EYE, 0.007);
+  // huge pasted-on grin
+  const mw = 0.142, my = 0.192, mh = 0.108;
+  const mouthPts = (k, dy) => { const p = []; for (let i = 0; i <= 10; i++) { const x = -mw * k + 2 * mw * k * i / 10; p.push([x, my + dy + 0.016 * Math.pow(x / mw, 2)]); }
+    for (let i = 1; i < 16; i++) { const t = Math.PI * i / 16; p.push([Math.cos(t) * mw * k, my + dy - Math.sin(t) * mh * k]); } return p; };
+  shape(mouthPts(1.0, 0), hex('#7a2236'), 0.006);
+  shape(mouthPts(0.86, -0.004), hex('#d6495f'), 0.008);
+  { const tp = []; for (let i = 0; i <= 10; i++) { const x = -0.128 + 0.256 * i / 10; tp.push([x, my - 0.006 + 0.016 * Math.pow(x / mw, 2)]); }
+    for (let i = 10; i >= 0; i--) { const x = -0.112 + 0.224 * i / 10; tp.push([x, my - 0.044 + 0.012 * Math.pow(x / mw, 2)]); } shape(tp, hex('#fffaf6'), 0.0095); }
+  { const tg = []; for (let i = 0; i <= 12; i++) { const t = Math.PI + Math.PI * i / 12; tg.push([Math.cos(t) * 0.05, my - 0.085 - Math.sin(t) * 0.0 + Math.sin(t) * 0.022]); } shape(tg, hex('#ef8a9a'), 0.0092); }
+  // big blush ovals
+  for (const s of [-1, 1]) { const bp = []; for (let i = 0; i < 14; i++) { const t = i / 14 * Math.PI * 2; bp.push([s * 0.178 + Math.cos(t) * 0.05, 0.232 + Math.sin(t) * 0.03]); } shape(bp, hex('#f6a0b4'), 0.0075); }
   return g.upload();
 }
 function bodyGeo(seed, raised, seated) {
@@ -1070,6 +1072,7 @@ const mobs = [], mobsIn = [];
     if (mobsIn.some(m => Math.hypot(m.x0 - x, m.z0 - z) < 0.8)) continue; mk({ type: 'idle', x0: x, z0: z, a0: Math.PI, seated: true, y0: 0.25 }, mobsIn); }
   for (const x of [-2.6, 2.6]) mk({ type: 'idle', x0: X0 + x, z0: -39.5, a0: 0, raised: true, y0: 0.45 }, mobsIn);
 }
+let MDT = 0.016;
 function updateMobs(list, t) {
   for (const m of list) {
     let bob = 0;
@@ -1091,8 +1094,8 @@ function updateMobs(list, t) {
     let ty = Math.sin(t * 0.5 + m.ph) * 0.25, tp = -0.22;
     if (dist < 9) { let rel = Math.atan2(dx, dz) - m.a; rel = Math.atan2(Math.sin(rel), Math.cos(rel)); const lim = m.seated ? 2.9 : 2.0;
       ty = clamp(rel, -lim, lim); tp = -clamp(Math.atan2(pl.y - (m.y + 1.45 * m.s), dist), -0.5, 0.6) - 0.12; }
-    let dyaw = ty - m.hy; m.hy += dyaw * Math.min(1, 0.045 * 60 * 0.016 * (dist < 9 ? 1.6 : 0.6));
-    m.hp += (tp - m.hp) * 0.05;
+    let dyaw = ty - m.hy; m.hy += dyaw * Math.min(1, MDT * (dist < 9 ? 4.5 : 1.5));
+    m.hp += (tp - m.hp) * Math.min(1, MDT * 3);
   }
 }
 
@@ -1675,7 +1678,7 @@ function frame(now) {
   const FOV = 1.08 * (W < H ? 1.12 : 1), asp = W / H, NEAR = 0.08, FAR = 600;
   const VP = mul(persp(FOV, asp, NEAR, FAR), lookDir(eye, fwd));
   const list = inside ? mobsIn : mobs;
-  updateMobs(list, t);
+  MDT = dt; updateMobs(list, t);
   const FOG = inside ? FOG_IN : FOG_OUT, FOGD = inside ? 0.008 : 0.0085;
 
   if (AC) { const dP = Math.hypot(pl.x - PZ[0], pl.z - PZ[1]);
