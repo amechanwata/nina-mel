@@ -1,0 +1,244 @@
+{
+ "_note": "秘密のお酒クラフト。materials=素材、recipes=レシピ(材料の順番は関係なし)、spots=村で素材を拾える場所(1日1回)、jobs=お仕事のごほうび。レシピ名は架空のものです。",
+ "materials": [
+  {
+   "id": "apple",
+   "name": "林檎",
+   "icon": "🍎",
+   "from": "村の入口の果物かご"
+  },
+  {
+   "id": "peach",
+   "name": "桃",
+   "icon": "🍑",
+   "from": "村の入口の果物かご"
+  },
+  {
+   "id": "honey",
+   "name": "蜂蜜",
+   "icon": "🍯",
+   "from": "お屋敷の庭の巣箱"
+  },
+  {
+   "id": "nectar",
+   "name": "花の蜜",
+   "icon": "🌼",
+   "from": "噴水の広場の花屋さん"
+  },
+  {
+   "id": "water",
+   "name": "清水",
+   "icon": "💧",
+   "from": "噴水の広場"
+  },
+  {
+   "id": "berry",
+   "name": "木苺",
+   "icon": "🫐",
+   "from": "大きな木の下"
+  },
+  {
+   "id": "herb",
+   "name": "香草",
+   "icon": "🌿",
+   "from": "大きな木の下"
+  },
+  {
+   "id": "grape",
+   "name": "葡萄",
+   "icon": "🍇",
+   "from": "共同食堂の裏"
+  },
+  {
+   "id": "wheat",
+   "name": "麦",
+   "icon": "🌾",
+   "from": "共同食堂の裏(パン屋さん)"
+  },
+  {
+   "id": "moonflower",
+   "name": "月光花",
+   "icon": "🌙",
+   "from": "大聖堂のテラス"
+  }
+ ],
+ "recipes": [
+  {
+   "id": "apple_honey",
+   "a": "apple",
+   "b": "honey",
+   "name": "蜜林檎酒",
+   "icon": "🍶",
+   "alc": true,
+   "text": "甘くて、ちょっとだけ強い。ニナのいちばん最初の発明。"
+  },
+  {
+   "id": "flower_wine",
+   "a": "grape",
+   "b": "nectar",
+   "name": "花葡萄酒",
+   "icon": "🍷",
+   "alc": true,
+   "text": "花の香りがする葡萄酒。村の献上酒に、少しだけ似ている。"
+  },
+  {
+   "id": "berry_herb",
+   "a": "berry",
+   "b": "herb",
+   "name": "木苺の香草酒",
+   "icon": "🥃",
+   "alc": true,
+   "text": "すっとする後味。寝る前の一杯にちょうどいい。"
+  },
+  {
+   "id": "peach_honey",
+   "a": "peach",
+   "b": "honey",
+   "name": "桃蜜酒",
+   "icon": "🍑",
+   "alc": true,
+   "text": "とろっと甘い。飲みすぎ注意。"
+  },
+  {
+   "id": "wheat_apple",
+   "a": "wheat",
+   "b": "apple",
+   "name": "麦林檎酒",
+   "icon": "🍺",
+   "alc": true,
+   "text": "パンの匂いがする、素朴なお酒。"
+  },
+  {
+   "id": "moon_wine",
+   "a": "moonflower",
+   "b": "grape",
+   "name": "月夜の葡萄酒",
+   "icon": "🌙",
+   "alc": true,
+   "text": "月の光みたいに、うっすら光っている。……飲んで大丈夫?"
+  },
+  {
+   "id": "nectar_soda",
+   "a": "nectar",
+   "b": "water",
+   "name": "花蜜ソーダ",
+   "icon": "🥤",
+   "alc": false,
+   "text": "しゅわっと甘い、メル用の飲み物。"
+  },
+  {
+   "id": "berry_juice",
+   "a": "berry",
+   "b": "water",
+   "name": "木苺ジュース",
+   "icon": "🧃",
+   "alc": false,
+   "text": "甘ずっぱい。メルがよろこびそう。"
+  }
+ ],
+ "failConsumes": false,
+ "fails": [
+  "……謎の一杯ができた。見なかったことにしよう。",
+  "……なんか、ちがう。",
+  "うわ、においがやばい。……捨てよ。",
+  "これは……飲み物じゃない。"
+ ],
+ "spots": [
+  {
+   "id": "gate",
+   "x": 0,
+   "z": 41,
+   "label": "果物かごをのぞく",
+   "mats": [
+    "apple",
+    "peach"
+   ]
+  },
+  {
+   "id": "plaza",
+   "x": -3,
+   "z": -12.5,
+   "label": "花屋さんと噴水をのぞく",
+   "mats": [
+    "nectar",
+    "water"
+   ]
+  },
+  {
+   "id": "tree",
+   "x": 6.2,
+   "z": -13.4,
+   "label": "木の下をさがす",
+   "mats": [
+    "berry",
+    "herb"
+   ]
+  },
+  {
+   "id": "hall",
+   "x": 9.5,
+   "z": -24,
+   "label": "食堂の裏をのぞく",
+   "mats": [
+    "grape",
+    "wheat"
+   ]
+  },
+  {
+   "id": "terrace",
+   "x": 0,
+   "z": -46,
+   "label": "テラスの花をつむ",
+   "mats": [
+    "moonflower",
+    "water"
+   ]
+  },
+  {
+   "id": "garden",
+   "x": -47.5,
+   "z": -24,
+   "label": "お屋敷の巣箱をのぞく",
+   "mats": [
+    "honey",
+    "nectar"
+   ]
+  }
+ ],
+ "jobs": {
+  "hair": {
+   "good": [
+    "nectar",
+    "honey"
+   ],
+   "slack": [
+    "water"
+   ]
+  },
+  "prayer": {
+   "good": [
+    "moonflower",
+    "grape"
+   ],
+   "slack": [
+    "herb"
+   ]
+  },
+  "taste": {
+   "good": [
+    "apple",
+    "wheat"
+   ],
+   "slack": [
+    "grape"
+   ]
+  }
+ },
+ "villager": [
+  "apple",
+  "peach",
+  "berry",
+  "nectar",
+  "honey"
+ ]
+}

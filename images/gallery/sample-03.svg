@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1000" width="1500" height="1000">
+<rect width="1500" height="1000" fill="#FBF8F3"/>
+<text x="90" y="130" font-family="serif" font-size="60" fill="#2D3333">ニナ</text>
+<rect x="90" y="180" width="200" height="200" fill="#2D3333" stroke="#D8D1C4" stroke-width="2"/><text x="190" y="430" font-family="sans-serif" font-size="30" fill="#5B6262" text-anchor="middle">黒髪</text><rect x="330" y="180" width="200" height="200" fill="#FFFFFF" stroke="#D8D1C4" stroke-width="2"/><text x="430" y="430" font-family="sans-serif" font-size="30" fill="#5B6262" text-anchor="middle">白エプロン</text><rect x="570" y="180" width="200" height="200" fill="#5C4B42" stroke="#D8D1C4" stroke-width="2"/><text x="670" y="430" font-family="sans-serif" font-size="30" fill="#5B6262" text-anchor="middle">ブーツ</text>
+<text x="90" y="600" font-family="serif" font-size="60" fill="#2D3333">メル</text>
+<rect x="90" y="650" width="200" height="200" fill="#E9DCDC" stroke="#D8D1C4" stroke-width="2"/><text x="190" y="900" font-family="sans-serif" font-size="30" fill="#5B6262" text-anchor="middle">銀に淡い桃色</text><rect x="330" y="650" width="200" height="200" fill="#C8964B" stroke="#D8D1C4" stroke-width="2"/><text x="430" y="900" font-family="sans-serif" font-size="30" fill="#5B6262" text-anchor="middle">琥珀色の瞳</text><rect x="570" y="650" width="200" height="200" fill="#F4BCAD" stroke="#D8D1C4" stroke-width="2"/><text x="670" y="900" font-family="sans-serif" font-size="30" fill="#5B6262" text-anchor="middle">差し色</text>
+<text x="1110" y="560" font-family="serif" font-size="40" fill="#8A8F8F" text-anchor="middle">配色見本（仮素材）</text>
+</svg>

@@ -1,0 +1,224 @@
+# 投稿画面（Sveltia CMS）の設定
+# 使い方・公開までの手順は、プロジェクト直下の PUBLISHING.md を見てください。
+# ★ が付いた行は、公開先を決めたときに書き換えます。
+
+backend:
+  name: github
+  repo: amechanwata/nina-mel-site # GitHub のユーザー名/リポジトリ名
+  branch: main
+  commit_messages:
+    create: '「{{slug}}」を追加（{{collection}}）'
+    update: '「{{slug}}」を更新（{{collection}}）'
+    delete: '「{{slug}}」を削除（{{collection}}）'
+    uploadMedia: '画像「{{path}}」を追加'
+    deleteMedia: '画像「{{path}}」を削除'
+
+site_url: https://amechanwata.github.io/nina-mel/ # サイトのURL
+display_url: https://amechanwata.github.io/nina-mel/
+
+# 画像の置き場所（項目ごとに上書きしています）
+media_folder: /public/images/uploads
+public_folder: /images/uploads
+
+media_libraries:
+  all:
+    # 「page1.png」のような同じ名前の画像が重ならないよう、日付＋ランダムな文字の名前で保存
+    filename_template: '{{year}}{{month}}{{day}}-{{uuid_short}}'
+  default:
+    config:
+      max_file_size: 26214400 # 25MB
+      slugify_filename: true
+      # スマホの写真（HEIC・JPEG）や PNG は、アップロード時に WebP に変換して軽くする
+      transformations:
+        raster_image:
+          format: webp
+          quality: 85
+
+collections:
+  # ---------------------------------------------------------------- 小説
+  - name: novel
+    label: 小説
+    label_singular: 小説の話
+    description: 1話＝1件。「公開する」にして保存すると、公開日以降にサイトに載ります。「下書き」のあいだは、サイトにも検索にも出ません。挿絵や表紙をまとめて上げるときは「画像まとめてアップ」（https://amechanwata.github.io/nina-mel/admin/upload/）。
+    folder: content/novel
+    format: json
+    extension: json
+    create: true
+    delete: true
+    slug: '{{number}}'
+    identifier_field: title
+    summary: '第{{number}}話　{{title}}'
+    sortable_fields: [number, publishedAt, title]
+    view_filters:
+      - { label: 下書きだけ, field: status, pattern: draft }
+      - { label: 公開中だけ, field: status, pattern: published }
+    fields:
+      - { label: タイトル, name: title, widget: string }
+      - { label: 話数（通し番号）, name: number, widget: number, value_type: int, min: 1, hint: '章をまたいで通しで数えます。URL（/novel/001/）にもなるので、公開後は変えないでください。' }
+      - { label: 章, name: chapter, widget: number, value_type: int, min: 1, default: 1, hint: '章の名前は、左のメニュー「章の名前」で付けられます。' }
+      - label: 公開する？
+        name: status
+        widget: select
+        default: draft
+        options:
+          - { label: 下書き（まだ公開しない）, value: draft }
+          - { label: 公開する, value: published }
+      - { label: 公開日, name: publishedAt, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, default: '{{now}}', hint: '未来の日付にすると予約投稿になり、その日の更新で公開されます。' }
+      - { label: あらすじ（一覧に出る短い紹介）, name: summary, widget: text, required: false }
+      - label: 表紙
+        name: cover
+        widget: image
+        required: false
+        media_folder: /public/images/novel/uploads
+        public_folder: /images/novel/uploads
+        hint: '任意。話の最初と目次に出ます。SNSで共有したときの画像にもなります。'
+      - label: 挿絵（まとめて選べます）
+        name: illustrations
+        widget: image
+        multiple: true
+        required: false
+        media_folder: /public/images/novel/uploads
+        public_folder: /images/novel/uploads
+        hint: '使う順にまとめて選んでください（あとから並べ替えもできます）。本文に［挿絵］と書いた所に、上から順に1枚ずつ入ります。'
+      - label: 本文
+        name: body
+        widget: text
+        hint: |
+          ・挿絵：［挿絵］とその行だけに書くと、上の挿絵が順番に1枚ずつ入ります。［挿絵5］のように番号で指定も可。
+            絵の下に一言添えるときは［挿絵：キャプション］。本文に書かなかった挿絵は最後に並びます。
+          ・1行＝1段落。空行を2つ以上入れると、そのぶん間が空きます。
+          ・ルビ：｜漢字《かんじ》　傍点：《《強調》》　場面転換：***（その行だけに書く）
+      - label: 注意書き（この話に含まれる描写）
+        name: contentWarnings
+        widget: list
+        required: false
+        field: { label: 内容, name: item, widget: string }
+      - { label: 関連する漫画の話数, name: relatedMangaNumber, widget: number, value_type: int, required: false, hint: 'この話の漫画版があるとき、その漫画の話数。話の最後にリンクが出ます。' }
+
+  # ---------------------------------------------------------------- 漫画
+  - name: manga
+    label: 漫画
+    label_singular: 漫画の話
+    description: 1話＝1件。ページ画像を何枚もまとめて上げるときは「画像まとめてアップ」（https://amechanwata.github.io/nina-mel/admin/upload/）が便利です。文字の項目はここで直せます。
+    folder: content/manga
+    format: json
+    extension: json
+    create: true
+    delete: true
+    slug: 'episode-{{number}}'
+    identifier_field: title
+    summary: '第{{number}}話　{{title}}'
+    sortable_fields: [number, publishedAt, title]
+    view_filters:
+      - { label: 下書きだけ, field: status, pattern: draft }
+      - { label: 公開中だけ, field: status, pattern: published }
+    fields:
+      - { label: タイトル, name: title, widget: string }
+      - { label: 話数, name: number, widget: number, value_type: int, min: 1, hint: 'URL（/manga/episode-001/）にもなるので、公開後は変えないでください。' }
+      - label: 公開する？
+        name: status
+        widget: select
+        default: draft
+        options:
+          - { label: 下書き（まだ公開しない）, value: draft }
+          - { label: 公開する, value: published }
+      - { label: 公開日, name: publishedAt, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, default: '{{now}}', hint: '未来の日付にすると予約投稿になり、その日の更新で公開されます。' }
+      - { label: あらすじ, name: summary, widget: text, required: false }
+      - label: ページ画像
+        name: pages
+        widget: image
+        multiple: true
+        min: 1
+        media_folder: /public/images/manga/uploads
+        public_folder: /images/manga/uploads
+        hint: '1ページ目から順に。まとめて選べます。順番は後から入れ替えられます（スマホは上下の矢印ボタン）。'
+      - label: 表紙
+        name: cover
+        widget: image
+        required: false
+        media_folder: /public/images/manga/uploads
+        public_folder: /images/manga/uploads
+        hint: '一覧に出る絵。空なら1ページ目を使います。'
+      - label: 開き方
+        name: direction
+        widget: select
+        default: rtl
+        options:
+          - { label: 右開き（日本の漫画）, value: rtl }
+          - { label: 左開き, value: ltr }
+      - { label: 見開き表示で1ページ目を単独にする, name: spreadFirstPageSingle, widget: boolean, default: true, hint: '表紙のように1ページ目だけ1枚で見せ、2-3ページ目から見開きにします。' }
+      - label: タグ
+        name: tags
+        widget: list
+        required: false
+        field: { label: タグ, name: item, widget: string }
+      - label: 注意書き（この話に含まれる描写）
+        name: contentWarnings
+        widget: list
+        required: false
+        field: { label: 内容, name: item, widget: string }
+      - { label: 関連する小説の話数, name: relatedNovelNumber, widget: number, value_type: int, required: false }
+
+  # ---------------------------------------------------------------- おまけ4コマ
+  - name: yonkoma
+    label: おまけ4コマ
+    label_singular: 4コマ
+    description: 1本＝1件。4コマの画像（4枚、または1枚にまとめた画像）を上から順に。まとめて上げるときは「画像まとめてアップ」（https://amechanwata.github.io/nina-mel/admin/upload/）が便利です。
+    folder: content/yonkoma
+    format: json
+    extension: json
+    create: true
+    delete: true
+    slug: '{{number}}'
+    identifier_field: title
+    summary: 'その{{number}}　{{title}}'
+    sortable_fields: [number, publishedAt, title]
+    view_filters:
+      - { label: 下書きだけ, field: status, pattern: draft }
+      - { label: 公開中だけ, field: status, pattern: published }
+    fields:
+      - { label: タイトル, name: title, widget: string }
+      - { label: 番号（その◯）, name: number, widget: number, value_type: int, min: 1 }
+      - label: 公開する？
+        name: status
+        widget: select
+        default: draft
+        options:
+          - { label: 下書き（まだ公開しない）, value: draft }
+          - { label: 公開する, value: published }
+      - { label: 公開日, name: publishedAt, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, default: '{{now}}' }
+      - label: コマの画像
+        name: panels
+        widget: image
+        multiple: true
+        min: 1
+        media_folder: /public/images/yonkoma/uploads
+        public_folder: /images/yonkoma/uploads
+        hint: '1コマ目から順に4枚。4コマを1枚にまとめた画像なら1枚だけでも大丈夫です。'
+      - { label: 作者のひとこと, name: comment, widget: text, required: false, hint: 'まんがの下に、ちびキャラの吹き出しで出ます。' }
+      - label: 吹き出しの顔
+        name: who
+        widget: select
+        default: both
+        options:
+          - { label: ふたり, value: both }
+          - { label: ニナ, value: nina }
+          - { label: メル, value: mel }
+
+  # ---------------------------------------------------------------- 章の名前
+  - name: settings
+    label: 章の名前
+    files:
+      - name: chapters
+        label: 小説の章
+        file: content/chapters.json
+        format: json
+        fields:
+          - label: 章
+            name: chapters
+            label_singular: 章
+            widget: list
+            summary: '第{{fields.number}}章　{{fields.title}}'
+            fields:
+              - { label: 章の番号, name: number, widget: number, value_type: int, min: 1 }
+              - { label: 章の名前, name: title, widget: string }

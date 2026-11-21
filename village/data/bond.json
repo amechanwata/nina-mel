@@ -1,0 +1,58 @@
+{
+ "_note": "ふたりの甘々時間。actions=選べる行動(phases=選べる時間帯、scene=会話、needDrink=メル用の飲み物を持っていると変わる)。会話の中で @if amae>=70 などで甘えたい度による分岐ができます。初回だけ firstBond だけ親密度が上がり、毎回 amae だけ甘えたい度が変わります。甘えたい度は、毎晩 perDay、お仕事で perJob、ふたりの時間がなかった日は perSkip 上がります(40以上・70以上で会話が変わる)。 会話に @focus と書くと、話している方を真ん中に大きく出します(@focus off で戻す)。",
+ "amae": {
+  "label": "メルの甘えたい度",
+  "init": 50,
+  "perDay": 6,
+  "perJob": 8,
+  "perSkip": 10
+ },
+ "actions": [
+  {
+   "id": "sofa",
+   "name": "ソファで過ごす",
+   "icon": "🛋",
+   "phases": [
+    "evening"
+   ],
+   "scene": "bond_sofa",
+   "firstBond": 3,
+   "amae": -15,
+   "mood": 2
+  },
+  {
+   "id": "tea",
+   "name": "お茶を飲む",
+   "icon": "🍵",
+   "phases": [
+    "evening",
+    "night"
+   ],
+   "scene": "bond_tea",
+   "drinkScene": "bond_gift",
+   "firstBond": 2,
+   "amae": -15,
+   "mood": 2,
+   "drinkMood": 6,
+   "drinkFirstBond": 5
+  },
+  {
+   "id": "hair",
+   "name": "髪を梳く",
+   "icon": "🪮",
+   "phases": [
+    "night"
+   ],
+   "scene": "bond_hair",
+   "firstBond": 3,
+   "amae": -25,
+   "mood": 2
+  }
+ ],
+ "scenes": {
+  "bond_sofa": "#title ふたりの時間:ソファ\n@bg bedroom\n@show ニナ tired\n@show メル please\n@focus\nメル[please]: もうちょっとそっち行っていい?\nニナ[chin]: ソファ広いでしょ。\nメル[smile]: うん、だから。\nニナ[huh]: ……話つながってないけど。\n@if amae>=70 hi\n@if amae>=40 mid\nメル[smile]: ふふ。ここ、あったかいね。\n@goto end\n@label mid\nメル[love]: ニナの肩、ちょうどいい高さ♡\nニナ[side]: ……枕じゃないんだけど。\n@goto end\n@label hi\nメル[love]: きょうはずーっと、ここにいる。\nニナ[tired]: ……好きにすれば。\n@label end\n@end",
+  "bond_tea": "#title ふたりの時間:お茶\n@bg hall\n@show ニナ tired\n@show メル normal\n@focus\nメル[normal]: ニナ、お茶いれたよ。\nニナ[tired]: ……ありがと。\n@if amae>=60 hi\nメル[smile]: きょうもおつかれさま。\n@goto end\n@label hi\nメル[please]: ねえ、きょうはなにしてたの? ぜんぶ聞かせて。\nニナ[chin]: ……長くなるよ。\nメル[love]: いいの。ぜんぶ聞きたいの♡\n@label end\n@end",
+  "bond_gift": "#title ふたりの時間:秘密の一杯\n@bg bedroom\n@show ニナ normal\n@show メル excited\n@focus\nメル[point]: ニナ、これなあに?\nニナ[side]: ……薬。\nメル[please]: わたしも飲みたい。\nニナ[chin]: そっちはダメ。……代わりに、これ。\n@se kira\nメル[excited]: わ、甘い! ニナが作ったの?\nニナ[side]: まあね。\nメル[smile]: じゃあ、また作ってね。\n@end",
+  "bond_hair": "#title ふたりの時間:髪を梳く\n@bg bedroom\n@show メル bed\n@show ニナ normal\n@focus\nメル[please]: ニナ、寝る前に髪とかして?\nニナ[chin]: ……昼もやったでしょ。\nメル[smile]: 夜のは、とくべつなの。\nニナ[normal]: ……じっとしてて。\n@if amae>=70 hi\n@if amae>=40 mid\nメル[smile]: ……きもちいい。おやすみ、ニナ。\nニナ[side]: ……おやすみ。\n@goto end\n@label mid\nメル[please]: ねえ、もうちょっとだけここにいて?\nニナ[chin]: もう寝る時間でしょ。\nメル[please]: あと五分だけ!\nニナ[tired]: ……五分ね。\nメル[smile]: ふふ、やった。\n@goto end\n@label hi\nメル[please]: ……ニナ、きょうはずっと、ここにいて。\nニナ[huh]: ……は?\nメル[bed]: ここで寝ればいいでしょ。ね?\nニナ[side]: ……今日だけね。\n@label end\n@end"
+ }
+}

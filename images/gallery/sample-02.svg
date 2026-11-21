@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200">
+<rect width="1200" height="1200" fill="#FBF8F3"/>
+<g fill="none" stroke="#E2D6C6" stroke-width="10" stroke-linecap="round">
+<path d="M600 520 C420 380 300 420 330 520 C360 610 500 580 600 520Z" fill="#FFFFFF"/>
+<path d="M600 520 C780 380 900 420 870 520 C840 610 700 580 600 520Z" fill="#FFFFFF"/>
+<path d="M590 530 C540 700 480 820 430 940"/><path d="M610 530 C660 700 720 820 780 940"/>
+</g>
+<circle cx="600" cy="520" r="34" fill="#F4BCAD"/>
+<g fill="#F4BCAD" opacity="0.8"><circle cx="300" cy="900" r="50"/><circle cx="900" cy="880" r="56"/><circle cx="220" cy="300" r="30"/><circle cx="980" cy="260" r="34"/></g>
+<g fill="#8C7350" opacity="0.7"><circle cx="360" cy="960" r="24"/><circle cx="840" cy="950" r="26"/></g>
+<text x="600" y="1110" font-family="serif" font-size="48" fill="#8A8F8F" text-anchor="middle">白いリボンと花（仮素材）</text>
+</svg>

@@ -1,0 +1,251 @@
+{
+ "_note": "ゲーム部分の設定。数値はすべて仮。scenes の会話は下書きなので、口調は自由に直してOK。書き方は scenes.json と同じ(@choice 選択肢=>ラベル | … / @label / @goto / @if 条件 ラベル / @stat 項目 +数 / @mood +数 / @flag 名前)。 着せ替えは outfits、ペア専用会話は pairs で設定。 夜の会話の選び方は nights。お酒クラフトは craft.json、ふたりの時間は bond.json。",
+ "version": 1,
+ "stats": {
+  "work": {
+   "label": "勤務態度",
+   "init": 20,
+   "color": "#8fb3d9"
+  },
+  "slack": {
+   "label": "サボり力",
+   "init": 20,
+   "color": "#b9a6d8"
+  },
+  "bond": {
+   "label": "親密度",
+   "init": 10,
+   "color": "#f2a3b5"
+  },
+  "odd": {
+   "label": "違和感",
+   "init": 0,
+   "color": "#a9a3a0"
+  }
+ },
+ "mood": {
+  "label": "メルのご機嫌",
+  "init": 60
+ },
+ "phases": [
+  {
+   "id": "morning",
+   "label": "朝",
+   "icon": "☀",
+   "tint": [
+    1.03,
+    1,
+    0.95
+   ]
+  },
+  {
+   "id": "noon",
+   "label": "昼",
+   "icon": "☀",
+   "tint": [
+    1,
+    1,
+    1
+   ]
+  },
+  {
+   "id": "evening",
+   "label": "夕方",
+   "icon": "🌇",
+   "tint": [
+    1.08,
+    0.9,
+    0.82
+   ]
+  },
+  {
+   "id": "night",
+   "label": "夜",
+   "icon": "🌙",
+   "tint": [
+    0.62,
+    0.66,
+    0.9
+   ]
+  }
+ ],
+ "jobs": [
+  {
+   "id": "hair",
+   "name": "髪の身支度",
+   "scene": "job_hair"
+  },
+  {
+   "id": "prayer",
+   "name": "祈祷の監視",
+   "scene": "job_prayer"
+  },
+  {
+   "id": "taste",
+   "name": "毒見",
+   "scene": "job_taste"
+  }
+ ],
+ "notes": [
+  {
+   "id": "smile",
+   "title": "みんな同じ笑顔",
+   "text": "村の人たちは、誰に話しかけても同じ顔で笑っている。口の形まで、そっくり同じ。",
+   "hint": "村人に何人か話しかけてみる"
+  },
+  {
+   "id": "sanctuary",
+   "title": "鍵のかかった扉",
+   "text": "大聖堂の祭壇の奥に、鍵のかかった扉がある。その先には、窓のひとつもない建物が続いているらしい。",
+   "hint": "大聖堂の中に入ってみる"
+  }
+ ],
+ "titles": [
+  {
+   "id": "sleepy",
+   "name": "眠れる首席",
+   "cond": "slack>=40",
+   "hint": "サボり力を上げる"
+  },
+  {
+   "id": "yesman",
+   "name": "聖女様の言いなり",
+   "cond": "bond>=30",
+   "hint": "メルと過ごす"
+  },
+  {
+   "id": "regular",
+   "name": "花の村の顔なじみ",
+   "cond": "talks>=8",
+   "hint": "村人とたくさん話す"
+  },
+  {
+   "id": "trouble",
+   "name": "問題児",
+   "cond": "slack>=70",
+   "hint": "とにかくサボる"
+  },
+  {
+   "id": "doubter",
+   "name": "神を疑う者",
+   "cond": "odd>=30",
+   "hint": "村の違和感に気づく"
+  },
+  {
+   "id": "brewer",
+   "name": "秘密の醸造家",
+   "cond": "recipes>=5",
+   "hint": "秘密の調合台でレシピを見つける"
+  }
+ ],
+ "scenes": {
+  "morning": "#title 朝の呼び出し\n@bg hall\n@show ニナ tired\n@show メル normal\nアルノ: おはようございます、首席殿。\nニナ[tired]: ……まだ眠いんだけど。\n@if job=hair m_hair\n@if job=prayer m_prayer\n@goto m_taste\n@label m_hair\nアルノ: 本日のお務めは、聖女候補さまの髪の身支度です。\n@goto m_end\n@label m_prayer\nアルノ: 本日のお務めは、祈祷の監視です。居眠りは厳禁ですよ。\n@goto m_end\n@label m_taste\nアルノ: 本日のお務めは、昼食の毒見です。\n@label m_end\nメル[please]: ニナ、きょうもよろしくね♡\nニナ[chin]: ……はいはい。\n@end",
+  "job_hair": "#title お仕事:髪の身支度\n@bg bedroom\n@show メル please\n@show ニナ chin\nアルノ: 首席殿、聖女候補さまの身支度をお願いします。\nメル[please]: ニナ、きょうは髪、編みこみにして♡\nニナ[chin]: ……ふつうに結ぶんじゃだめ?\n@choice ていねいに編みこむ=>good | ひとつ結びで済ませる=>slack\n@label good\n@stat work +8\n@stat bond +4\nニナ[normal]: ……じっとしてて。\nメル[smile]: えへへ、ニナの手、くすぐったい♡\n@flag job_good\n@goto end\n@label slack\n@stat slack +8\n@stat work -3\n@mood -4\nニナ[tired]: はい、できた。\n@fx shake\nメル[shock]: ちょっと! 五秒で終わったんだけど!\n@flag job_slack\n@label end\n@end",
+  "job_prayer": "#title お仕事:祈祷の監視\n@bg chapel\n@show メル normal\n@show ニナ tired\nアルノ: 祈祷のあいだ、聖女候補さまのおそばに。\nメル[normal]: ……神様、きょうも村をお守りください。\nニナ[tired]: (……ねむ)\n@choice 起きて、ちゃんと見守る=>good | ちょっとだけ目を閉じる=>slack\n@label good\n@stat work +8\n@stat odd +4\nニナ[chin]: ……村の人たち、祈ってるあいだもずっと笑ってる。\nメル[smile]: ニナ、ちゃんと起きてたね。えらいえらい♡\n@flag job_good\n@goto end\n@label slack\n@stat slack +8\n@stat work -3\n@mood -5\n@se suu\nニナ[sleep]: すぅ…\n@fx shake\nメル[shock]: ニナ! いびき、祭壇まで聞こえてたよ!\n@flag job_slack\n@label end\n@end",
+  "job_taste": "#title お仕事:毒見\n@bg hall\n@show ニナ normal\n@show メル excited\nアルノ: 本日の昼食です。まずは首席殿が毒見を。\nメル[excited]: きょうはお肉のパイと、野菜のスープだって!\nニナ[normal]: ……お肉。\n@choice 一品ずつ、ちゃんと確かめる=>good | 肉だけ念入りに確かめる=>slack\n@label good\n@stat work +8\n@stat bond +2\nニナ[normal]: ……どれも大丈夫。食べていいよ。\nメル[smile]: ありがと、ニナ♡\n@flag job_good\n@goto end\n@label slack\n@stat slack +8\n@mood -4\n@se mogu\nニナ[eat]: もぐ…もぐ… ……念のため、もうひと切れ。\nメル[shock]: それ、ただ食べたいだけでしょ!\n@flag job_slack\n@label end\n@end",
+  "report": "#title 夕方の報告\n@bg hall\n@show ニナ tired\nアルノ: 首席殿、本日のご報告を。\n@if flag:job_good r_good\nアルノ: ……報告書が三行なのですが。\nニナ[tired]: 三行で足りる仕事だったんで。\nアルノ: はぁ……明日は、もう少しお願いしますね。\n@goto r_end\n@label r_good\nアルノ: 本日も、ご苦労さまでした。聖女候補さまも、お喜びでしたよ。\nニナ[chin]: ……そりゃどうも。\n@stat work +2\n@label r_end\n@end",
+  "night": "#title 夜:メルの部屋\n@bg bedroom\n@show メル bed\n@show ニナ chin\n@if flag:job_slack n_slack\n@if bond>=30 n_deep\nメル[please]: ニナ、きょうもおつかれさま♡\nニナ[chin]: ……あんたもね。\n@stat bond +4\n@goto n_end\n@label n_slack\nメル[bed]: きょう、サボってたでしょ。\nニナ[side]: ……休憩してただけ。\nメル[smile]: ふーん。じゃあ明日は、わたしのお願いいっこ聞いてね♡\n@stat bond +3\n@mood +3\n@goto n_end\n@label n_deep\nメル[bed]: ねえ、ニナ。神様って、ほんとにいるのかな。\nニナ[chin]: ……さあ。あんたが一番知ってるんじゃないの。\nメル[smile]: ……ふふ。そうだよね。\n@stat bond +3\n@stat odd +5\n@label n_end\n@end",
+  "dress_nina_formal": "#title 着せ替え\n@bg bedroom\n@show ニナ chin\n@show メル love\nメル[love]: ……ニナ、かっこいい……♡\nニナ[chin]: じろじろ見んな。\n@end",
+  "dress_mel_outing": "#title 着せ替え\n@bg festival\n@show メル point\n@show ニナ huh\nメル[point]: じゃーん! お出かけ服だよ!\nニナ[huh]: ……似合ってるんじゃない。\nメル[love]: えへへ、ニナが褒めた♡\n@end",
+  "pair_outing": "#title 夜:おそろいのおでかけ\n@bg festival\n@show メル point\n@show ニナ chin\n@focus\nメル[point]: ニナ! その服、すっごくかっこいい!\nニナ[chin]: ……アルノに着ろって言われただけ。\nメル[love]: ねえねえ、わたしもお出かけ服なの。ふたりで並んだら、お出かけみたいじゃない?♡\nニナ[side]: ……夜だけど。\nメル[smile]: いいの! 明日、ちょっとだけ寄り道しよ?\n@stat bond +8\n@mood +10\n@end",
+  "n_odd": "#title 夜:笑顔のはなし\n@bg bedroom\n@show メル bed\n@show ニナ chin\nメル[bed]: ねえ、ニナ。村のみんなって、いつも笑ってるでしょ。\nニナ[chin]: ……笑ってるね。ずっと。\nメル[normal]: わたしも、ちゃんと笑えてるかな。みんなと同じくらい。\nニナ[side]: ……あんたは、あんなふうに笑わなくていいよ。\nメル[smile]: ……そっか。ふふ、そっか。\n@stat bond +5\n@stat odd +5\n@end",
+  "n_sleepy": "#title 夜:眠れる首席\n@bg bedroom\n@show メル bed\n@show ニナ sleep\nメル[bed]: ニナ、聞いて。村で「眠れる首席」って呼ばれてるよ。\nニナ[sleep]: ……すぅ……\nメル[shock]: いま寝ないで!\n@stat slack +3\n@stat bond +2\n@end",
+  "night_lap": "#title 夜:ひざまくら\n@bg bedroom\n@show メル please\n@show ニナ tired\nメル[please]: ニナ、きょうはひざまくらしてあげる♡\nニナ[tired]: ……いい。\nメル[smile]: えんりょしないの。ほら。\nニナ[sleep]: ……すぅ。\nメル[smile]: ……もう寝てる。\n@stat bond +3\n@end",
+  "night_star": "#title 夜:星を見る\n@bg festival\n@show メル normal\n@show ニナ tired\nメル[normal]: ニナ、星がきれいだよ。\nニナ[tired]: ……寒い。帰ろ。\nメル[please]: もうちょっとだけ。ね?\nニナ[chin]: ……五分だけね。\n@stat bond +2\n@mood +3\n@end",
+  "n_allbrew": "#title 夜:瓶棚\n@bg bedroom\n@show メル excited\n@show ニナ chin\nメル[excited]: ニナの棚、きれいな瓶がいっぱい!\nニナ[side]: ……見なかったことにして。\nメル[smile]: ふふ、ふたりだけの秘密ね。\nニナ[chin]: ……アルノには言わないでよ。\n@stat bond +5\n@stat slack +3\n@end"
+ },
+ "outfits": {
+  "_note": "着せ替え。img は今は4コマの切り抜きを仮で使用。faces は、その服のときに会話の立ち絵を差し替える指定(表情名: 画像キー)。cond が空なら最初から着られる。 full は着せ替え画面の全身立ち絵(背景透明のPNG/WebP/SVG)。縦横比やポーズは自由で、自動で全身が入るように表示されます。今は仮の紙人形の絵です。",
+  "ニナ": [
+   {
+    "id": "casual",
+    "name": "いつもの服",
+    "img": "nina_normal",
+    "cond": "",
+    "hint": "",
+    "full": "img/outfits/nina_casual_full-mwkl85rg.webp"
+   },
+   {
+    "id": "formal",
+    "name": "首席の礼装",
+    "img": "nina_chin",
+    "cond": "work>=40",
+    "hint": "勤務態度を40まで上げる",
+    "faces": {
+     "normal": "nina_chin",
+     "huh": "nina_chin"
+    },
+    "firstScene": "dress_nina_formal",
+    "full": "img/outfits/nina_formal_full-mwkn8wgj.webp"
+   },
+   {
+    "id": "omwlqms2w",
+    "name": "転生前の姿",
+    "cond": "recipes>=100",
+    "hint": "",
+    "full": "img/outfits/nina_omwlqms2w_full-mwlqnw8z.png"
+   }
+  ],
+  "メル": [
+   {
+    "id": "dress",
+    "name": "聖女候補のドレス",
+    "img": "mel_normal",
+    "cond": "",
+    "hint": "",
+    "full": "img/outfits/mel_dress_full-mwkl85rg.webp"
+   },
+   {
+    "id": "outing",
+    "name": "お出かけ服",
+    "img": "mel_point",
+    "cond": "album>=2",
+    "hint": "会話アルバムを2つ見つける",
+    "faces": {
+     "normal": "mel_point",
+     "excited": "mel_love"
+    },
+    "firstScene": "dress_mel_outing",
+    "full": "img/outfits/mel_outing_full-mwkq9a12.png"
+   },
+   {
+    "id": "omwlqo3mf",
+    "name": "ネグリジェ",
+    "cond": "bond>=50",
+    "hint": "",
+    "full": "img/outfits/mel_omwlqo3mf_full-mwlqp0lx.png"
+   }
+  ]
+ },
+ "pairs": [
+  {
+   "id": "pair_outing",
+   "nina": "formal",
+   "mel": "outing",
+   "scene": "pair_outing",
+   "name": "おそろいのおでかけ"
+  }
+ ],
+ "nights": {
+  "_note": "夜の会話の選び方。上から順に、条件を満たしていて未読(once:true)のものを優先。どれもなければ repeat の中から日替わり。",
+  "once": [
+   {
+    "scene": "n_odd",
+    "cond": "odd>=20"
+   },
+   {
+    "scene": "n_sleepy",
+    "cond": "title:sleepy"
+   },
+   {
+    "scene": "n_allbrew",
+    "cond": "recipes>=8"
+   }
+  ],
+  "repeat": [
+   "night",
+   "night_lap",
+   "night_star"
+  ]
+ }
+}
