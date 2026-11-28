@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>花の村をおさんぽ(試作)</title>
+<meta name="description" content="ニナとメルが暮らす花の村を、3Dで歩いてめぐる試作版。村のどこかに、ふたりの会話が隠れています。">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap">
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#f6efe9;font-family:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Noto Sans JP",sans-serif;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+canvas{display:block;position:fixed;inset:0;width:100%;height:100%;cursor:grab}
+canvas:active{cursor:grabbing}
+#start{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 42%,rgba(255,252,248,.88),rgba(240,222,226,.95));color:#7a5560;text-align:center;z-index:10;transition:opacity .9s;padding:24px;box-sizing:border-box}
+#start .en{letter-spacing:.35em;font-size:12px;opacity:.6;margin-bottom:10px}
+#start h1{font-size:clamp(30px,7.5vw,54px);margin:0 0 10px;letter-spacing:.1em;font-weight:700}
+#start p{margin:3px 0;font-size:clamp(13px,3.4vw,16px);opacity:.85}
+#go{margin-top:28px;font:inherit;font-weight:700;font-size:19px;padding:14px 40px;border-radius:999px;border:0;background:#e98aa4;color:#fff;box-shadow:0 8px 24px rgba(233,138,164,.4);cursor:pointer;letter-spacing:.1em}
+#go:active{transform:scale(.97)}
+#how{margin-top:22px;font-size:13px;opacity:.7;line-height:1.8}
+#zone{position:fixed;left:0;right:0;top:19%;text-align:center;color:#fff;text-shadow:0 2px 14px rgba(120,80,95,.7),0 0 2px rgba(120,80,95,.6);opacity:0;transition:opacity 1.2s;pointer-events:none;z-index:4}
+#zone .t{font-size:clamp(28px,6.5vw,46px);font-weight:700;letter-spacing:.2em}
+#zone .s{font-size:clamp(13px,3.3vw,17px);margin-top:8px;letter-spacing:.08em}
+#bubble{position:fixed;left:0;top:0;transform:translate(-50%,-100%);background:#fffdfb;color:#6b4553;padding:9px 16px;border-radius:18px;font-size:15px;white-space:nowrap;box-shadow:0 4px 14px rgba(120,60,90,.22);pointer-events:none;opacity:0;transition:opacity .35s;z-index:3}
+#bubble:after{content:"";position:absolute;left:50%;bottom:-8px;margin-left:-8px;border:8px solid transparent;border-top-color:#fffdfb;border-bottom:0}
+#snd{position:fixed;top:12px;right:12px;z-index:6;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.75);color:#a05c75;font-size:19px;cursor:pointer;box-shadow:0 2px 10px rgba(120,60,90,.15);display:none}
+#hint{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:rgba(255,255,255,.75);color:#7a5560;padding:8px 16px;border-radius:999px;font-size:13px;z-index:4;transition:opacity 1s;white-space:nowrap;display:none}
+#joy{position:fixed;left:26px;bottom:34px;width:128px;height:128px;border-radius:50%;background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.65);display:none;z-index:5;touch-action:none}
+#knob{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:rgba(255,255,255,.9);box-shadow:0 2px 8px rgba(120,60,90,.2)}
+#fade{position:fixed;inset:0;background:#fffaf6;opacity:0;pointer-events:none;transition:opacity .55s;z-index:8}
+#nogl{display:none;position:fixed;inset:0;align-items:center;justify-content:center;color:#7a5560;background:#f6efe9;text-align:center;padding:30px}
+
+#marker{position:fixed;left:0;top:0;transform:translate(-50%,-100%);z-index:3;display:none;cursor:pointer;
+  background:#fff;color:#c4607e;border-radius:999px;padding:6px 12px 6px 10px;font-size:14px;font-weight:700;box-shadow:0 4px 14px rgba(150,70,100,.3);white-space:nowrap;animation:mk 1.6s ease-in-out infinite}
+#marker:after{content:"";position:absolute;left:50%;bottom:-7px;margin-left:-7px;border:7px solid transparent;border-top-color:#fff;border-bottom:0}
+@keyframes mk{0%,100%{margin-top:0}50%{margin-top:-8px}}
+#talk{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);z-index:6;display:none;font:inherit;font-weight:700;font-size:16px;
+  border:0;border-radius:999px;padding:13px 26px;background:#e98aa4;color:#fff;box-shadow:0 8px 22px rgba(233,138,164,.45);cursor:pointer;white-space:nowrap}
+#doorMk{position:fixed;left:0;top:0;transform:translate(-50%,-100%);z-index:3;display:none;background:#fff;color:#7a5560;border-radius:999px;padding:6px 12px;font-size:14px;font-weight:700;box-shadow:0 4px 14px rgba(150,70,100,.3);white-space:nowrap;pointer-events:none;animation:mk 1.6s ease-in-out infinite}
+#doorBtn{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);z-index:6;display:none;font:inherit;font-weight:700;font-size:16px;border:0;border-radius:999px;padding:13px 26px;background:#fff;color:#c4607e;box-shadow:0 8px 22px rgba(150,70,100,.3);cursor:pointer;white-space:nowrap}
+#vn{position:fixed;inset:0;z-index:12;display:none;overflow:hidden;opacity:0;transition:opacity .45s;touch-action:manipulation}
+#vn.on{opacity:1}
+#vn .bg{position:absolute;inset:-20px;background-size:cover;background-position:center;filter:saturate(.9)}
+#vn .bg:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,248,240,.15),rgba(255,240,235,.55))}
+#vn .card{position:absolute;top:6%;width:min(54vw,380px);height:min(56vh,95vw);border-radius:20px;overflow:hidden;background:#fff;
+  border:5px solid #fff;box-shadow:0 10px 30px rgba(110,60,80,.28);transition:transform .35s cubic-bezier(.3,1.4,.5,1),filter .35s,opacity .35s;opacity:0}
+#vn .card img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;transition:opacity .15s;display:block}
+#vn .card.L{left:1%;transform:translateX(-30px) rotate(-2.5deg)}
+#vn .card.R{right:1%;transform:translateX(30px) rotate(2.5deg)}
+#vn .card.show{opacity:1}
+#vn .card.L.show{transform:translateX(0) rotate(-2.5deg)}
+#vn .card.R.show{transform:translateX(0) rotate(2.5deg)}
+#vn .card.dim{filter:brightness(.72) saturate(.6);z-index:1}
+#vn .card.act{z-index:2}
+#vn .card.L.act{transform:scale(1.04) rotate(-2.5deg)}
+#vn .card.R.act{transform:scale(1.04) rotate(2.5deg)}
+#vn .card.hop{animation:hop .32s ease-out}
+@keyframes hop{0%{margin-top:0}35%{margin-top:-14px}100%{margin-top:0}}
+#vn .tag{position:absolute;left:10px;bottom:10px;padding:3px 12px;border-radius:999px;color:#fff;font-size:13px;font-weight:700}
+#vn .cg{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) scale(.85);width:min(92vw,620px);border-radius:16px;overflow:hidden;
+  border:6px solid #fff;box-shadow:0 14px 40px rgba(110,60,80,.35);opacity:0;transition:opacity .4s,transform .5s cubic-bezier(.3,1.3,.5,1);z-index:3;pointer-events:none}
+#vn .cg.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#vn .cg img{width:100%;display:block}
+#vn .fx{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+#vn .fx .glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(255,220,235,.85),rgba(255,200,225,.35) 45%,rgba(255,255,255,0) 75%);opacity:0;transition:opacity .6s}
+#vn .fx .word{position:absolute;left:50%;top:30%;transform:translate(-50%,-50%) rotate(-6deg);font-size:clamp(40px,11vw,84px);font-weight:700;color:#c98a6a;
+  text-shadow:0 0 0 #fff,3px 3px 0 #fff,-3px -3px 0 #fff,3px -3px 0 #fff,-3px 3px 0 #fff;opacity:0;white-space:nowrap}
+#vn .fx .word.go{animation:word 2.2s ease-out forwards}
+@keyframes word{0%{opacity:0;transform:translate(-50%,-50%) rotate(-6deg) scale(.4)}15%{opacity:1;transform:translate(-50%,-50%) rotate(-6deg) scale(1.15)}30%{transform:translate(-50%,-50%) rotate(-3deg) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-60%) rotate(-3deg) scale(1.05)}}
+#vn .fx .sp{position:absolute;color:#f6c94e;font-size:26px;animation:sp 1.6s ease-out forwards;text-shadow:0 0 8px #fff}
+@keyframes sp{0%{opacity:0;transform:scale(.2) rotate(0)}30%{opacity:1;transform:scale(1.1) rotate(40deg)}100%{opacity:0;transform:scale(.6) rotate(90deg) translateY(-30px)}}
+#vn.shake{animation:shake .45s}
+@keyframes shake{0%,100%{transform:none}20%{transform:translate(-8px,4px)}40%{transform:translate(7px,-5px)}60%{transform:translate(-5px,3px)}80%{transform:translate(4px,-2px)}}
+#vn .box{position:absolute;left:3%;right:3%;bottom:max(18px,3%);min-height:118px;background:rgba(255,253,250,.94);border-radius:20px;border:3px solid #f3dbe2;
+  box-shadow:0 8px 24px rgba(110,60,80,.18);padding:26px 20px 18px;box-sizing:border-box;z-index:5;cursor:pointer}
+#vn .name{position:absolute;left:18px;top:-17px;padding:5px 18px;border-radius:999px;color:#fff;font-weight:700;font-size:15px;letter-spacing:.08em;box-shadow:0 3px 10px rgba(0,0,0,.12)}
+#vn .text{font-size:clamp(16px,4.3vw,19px);line-height:1.7;color:#5e4650;min-height:3.4em;white-space:pre-wrap}
+#vn .next{position:absolute;right:18px;bottom:10px;color:#e98aa4;font-size:14px;animation:nx .9s ease-in-out infinite;opacity:0}
+@keyframes nx{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+#vn .ui{position:absolute;top:12px;right:12px;display:flex;gap:8px;z-index:6}
+#vn .ui button{font:inherit;font-weight:700;font-size:13px;border:0;border-radius:999px;height:40px;min-width:40px;padding:0 14px;background:rgba(255,255,255,.85);color:#a05c75;cursor:pointer;box-shadow:0 2px 10px rgba(120,60,90,.15)}
+#vn .ui button.on{background:#e98aa4;color:#fff}
+#vn .title{position:absolute;left:0;right:0;top:36%;text-align:center;z-index:6;pointer-events:none;opacity:0;transition:opacity .5s}
+#vn .title small{display:block;font-size:13px;letter-spacing:.3em;color:#a8848f;margin-bottom:8px}
+#vn .title b{display:inline-block;font-size:clamp(30px,8vw,48px);color:#7a5560;background:rgba(255,255,255,.9);padding:10px 34px;border-radius:999px;box-shadow:0 8px 24px rgba(110,60,80,.18);letter-spacing:.12em}
+#vn .title.show{opacity:1}
+@media (min-aspect-ratio: 1/1){ #vn .card{width:min(30vw,320px);height:min(62vh,420px);top:5%} #vn .card.L{left:14%} #vn .card.R{right:14%} #vn .box{left:12%;right:12%} }
+
+#albumBtn{position:fixed;top:12px;right:64px;z-index:6;height:44px;border-radius:999px;border:0;background:rgba(255,255,255,.8);color:#a05c75;font:inherit;font-weight:700;font-size:14px;padding:0 16px;cursor:pointer;box-shadow:0 2px 10px rgba(120,60,90,.15);display:none}
+#albumBtn .dot{display:none;width:9px;height:9px;border-radius:50%;background:#ef6f93;position:absolute;top:6px;right:8px}
+#albumBtn.new .dot{display:block}
+#goAlbum{margin-top:14px;font:inherit;font-weight:700;font-size:15px;padding:10px 26px;border-radius:999px;border:2px solid #e98aa4;background:rgba(255,255,255,.7);color:#d0708d;cursor:pointer}
+#album{position:fixed;inset:0;z-index:11;display:none;opacity:0;transition:opacity .35s;background:linear-gradient(180deg,rgba(255,249,245,.97),rgba(250,232,238,.97));overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+#album.on{opacity:1}
+#album .wrap{max-width:760px;margin:0 auto;padding:22px 18px 40px}
+#album .hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+#album .hd small{display:block;font-size:11px;letter-spacing:.3em;color:#b8949f}
+#album .hd h2{margin:2px 0 0;font-size:clamp(20px,5.4vw,26px);color:#7a5560;letter-spacing:.08em}
+#album .hd button{font:inherit;font-weight:700;border:0;border-radius:999px;width:44px;height:44px;background:#fff;color:#a05c75;font-size:16px;cursor:pointer;box-shadow:0 2px 10px rgba(120,60,90,.15)}
+#album .count{color:#a0838d;font-size:13px;margin:4px 0 18px}
+#album .bar{height:8px;border-radius:99px;background:#f1dfe5;overflow:hidden;margin-top:6px}
+#album .bar i{display:block;height:100%;background:linear-gradient(90deg,#f3a6bd,#e98aa4);border-radius:99px}
+#album .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+#album .ep{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 6px 18px rgba(110,60,80,.12);cursor:pointer;transition:transform .2s;position:relative}
+#album .ep:active{transform:scale(.98)}
+#album .ep .th{aspect-ratio:5/3;background-size:cover;background-position:center}
+#album .ep .bd{padding:12px 14px 14px}
+#album .ep .no{font-size:11px;letter-spacing:.2em;color:#c49aa8}
+#album .ep .tt{font-size:18px;font-weight:700;color:#6b4553;margin:2px 0 4px}
+#album .ep .pl{font-size:12px;color:#a0838d}
+#album .ep .play{position:absolute;right:12px;bottom:14px;background:#e98aa4;color:#fff;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700}
+#album .ep.lock{cursor:default}
+#album .ep.lock .th{filter:blur(10px) grayscale(.7) brightness(1.1);transform:scale(1.1)}
+#album .ep.lock .q{position:absolute;left:0;right:0;top:0;aspect-ratio:5/3;display:flex;align-items:center;justify-content:center;font-size:40px;color:#fff;text-shadow:0 2px 10px rgba(110,60,80,.4);font-weight:700}
+#album .ep.soon{border:2px dashed #e9c3cf;background:rgba(255,255,255,.5);box-shadow:none;cursor:default;display:flex;align-items:center;justify-content:center;min-height:180px;text-align:center;color:#b8949f;font-size:14px;line-height:1.8}
+#toast{position:fixed;left:50%;top:70px;transform:translate(-50%,-10px);background:#fff;color:#7a5560;padding:10px 18px;border-radius:999px;font-size:14px;font-weight:700;box-shadow:0 6px 18px rgba(110,60,80,.2);opacity:0;transition:opacity .4s,transform .4s;z-index:13;pointer-events:none;white-space:nowrap}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+
+#mapBtn{position:fixed;top:12px;right:176px;z-index:6;height:44px;border-radius:999px;border:0;background:rgba(255,255,255,.8);color:#a05c75;font:inherit;font-weight:700;font-size:14px;padding:0 16px;cursor:pointer;box-shadow:0 2px 10px rgba(120,60,90,.15);display:none}
+#map{position:fixed;inset:0;z-index:11;display:none;opacity:0;transition:opacity .3s;background:rgba(250,236,240,.94);overflow:auto;touch-action:pan-y}
+#map.on{opacity:1}
+#map .wrap{max-width:560px;margin:0 auto;padding:16px 14px 30px}
+#map .hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+#map .hd small{display:block;font-size:11px;letter-spacing:.3em;color:#b8949f}
+#map .hd h2{margin:2px 0 0;font-size:22px;color:#7a5560;letter-spacing:.08em}
+#map .hd button{font:inherit;font-weight:700;border:0;border-radius:999px;width:44px;height:44px;background:#fff;color:#a05c75;font-size:16px;cursor:pointer;box-shadow:0 2px 10px rgba(120,60,90,.15)}
+#map .note{font-size:12px;color:#a0838d;margin:0 0 10px}
+#map svg{width:100%;height:auto;display:block;border-radius:22px;box-shadow:0 10px 30px rgba(110,60,80,.18)}
+#map .pin{cursor:pointer}
+#map .pin text{font-family:"Zen Maru Gothic",sans-serif;font-weight:700}
+#map .pin:active .pill{fill:#fde3eb}
+@keyframes pulse{0%{r:5}50%{r:9}100%{r:5}}
+#map .me{animation:pulse 1.4s ease-in-out infinite}
+#vn .choices{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+#vn .choices button{font:inherit;font-weight:700;font-size:16px;text-align:left;padding:12px 16px;border-radius:14px;border:2px solid #f0b8c8;background:#fff;color:#7a5560;cursor:pointer;box-shadow:0 3px 10px rgba(120,60,90,.12)}
+#vn .choices button:active{background:#fde3eb}
+/* 会話(ゲーム):ふたり並びのノベルUI。縦画面は ニナ左上・メル右下 で顔が重ならないように */
+#vn.duo .bg:after{background:linear-gradient(180deg,rgba(255,251,247,.62),rgba(255,247,244,.86))}
+#vn.duo .bg:before{content:"";position:absolute;left:0;right:0;top:9vh;height:68vh;z-index:1;background:radial-gradient(ellipse 70% 52% at 50% 50%,rgba(255,255,255,.92),rgba(255,255,255,0) 74%)}
+#vn.duo .card{bottom:auto;width:70vw;max-width:460px;height:min(36vh,70vw);background:transparent;border:0;box-shadow:none;border-radius:0;overflow:visible;transform-origin:50% 50%;
+  transition:transform .35s cubic-bezier(.3,1.3,.5,1),opacity .25s,filter .25s,left .4s,right .4s,top .4s,width .4s,height .4s}
+#vn.duo .card img{object-fit:contain;object-position:50% 0;-webkit-mask-image:linear-gradient(180deg,#000 76%,transparent 99%);mask-image:linear-gradient(180deg,#000 76%,transparent 99%);animation:vbreathe 3.6s ease-in-out infinite;transform-origin:50% 100%}
+#vn.duo .card.R img{animation-delay:-1.7s}
+#vn.duo .card .tag{display:none}
+#vn.duo .card.L{left:1vw;top:calc(10vh + env(safe-area-inset-top));transform:translateX(-30px)}
+#vn.duo .card.R{right:1vw;top:calc(10vh + 31vh + env(safe-area-inset-top));transform:translateX(30px)}
+#vn.duo .card.L.show,#vn.duo .card.R.show{transform:none}
+#vn.duo .card.act{transform:scale(1.03)!important;z-index:2;opacity:1}
+#vn.duo .card.dim{opacity:.62;filter:saturate(.65);transform:scale(.97)!important;z-index:1}
+#vn.duo .card.swap img{animation:vswap .26s ease-out}
+@keyframes vswap{from{opacity:.35}to{opacity:1}}
+@keyframes vbreathe{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-3px) scaleY(1.01)}}
+/* 特別な会話(@focus):話している方を真ん中に大きく */
+#vn.duo.solo .card{width:94vw;max-width:520px;height:min(60vh,106vw);top:calc(15vh + env(safe-area-inset-top))}
+#vn.duo.solo .card.L,#vn.duo.solo .card.R{left:50%;right:auto;margin-left:calc(-1 * min(47vw, 260px))}
+#vn.duo.solo .card.act{opacity:1;transform:none!important}
+#vn.duo.solo .card:not(.act){opacity:0;transform:scale(.92)!important}
+#vn.duo .box{bottom:calc(max(14px,2.5%) + env(safe-area-inset-bottom));max-height:23vh}
+#vn.duo .ui{top:calc(10px + env(safe-area-inset-top))}
+#vn.duo .ui button{transform:scale(.88);transform-origin:100% 0}
+body.still #vn.duo .card img{animation:none}
+body.still #vn.duo .card{transition:none}
+@media (prefers-reduced-motion: reduce){#vn.duo .card img{animation:none}}
+@media (min-aspect-ratio: 1/1){
+ #vn.duo .card{width:min(38vw,440px);height:min(62vh,500px)}
+ #vn.duo .card.L{left:10%;top:8vh} #vn.duo .card.R{right:10%;top:8vh}
+ #vn.duo .card img{object-position:50% 100%}
+ #vn.duo.solo .card{width:min(60vw,560px);height:min(68vh,560px);top:6vh}
+ #vn.duo.solo .card.L,#vn.duo.solo .card.R{margin-left:calc(-1 * min(30vw, 280px))}
+}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="zone"><div class="t"></div><div class="s"></div></div>
+<div id="bubble"></div>
+<button id="snd" aria-label="音のオン・オフ">♪</button>
+<button id="albumBtn" aria-label="会話アルバム">📖 アルバム<span class="dot"></span></button>
+<div id="album"><div class="wrap"><div class="hd"><div><small>CONVERSATION ALBUM</small><h2>ニナとメルの会話アルバム</h2></div><button class="x" aria-label="閉じる">✕</button></div><div class="count"></div><div class="grid"></div></div></div>
+<div id="toast"></div>
+<div id="hint"></div>
+<div id="joy"><div id="knob"></div></div>
+<div id="fade"></div>
+
+<div id="marker"></div>
+<button id="talk"></button>
+<button id="doorBtn"></button>
+<div id="doorMk">⛪ 大聖堂の入口</div>
+<div id="vn">
+  <div class="bg"></div>
+  <div class="card L"><img alt=""><div class="tag" style="background:#6f6a8a">ニナ</div></div>
+  <div class="card R"><img alt=""><div class="tag" style="background:#e2849e">メル</div></div>
+  <div class="cg"><img alt=""></div>
+  <div class="fx"><div class="glow"></div><div class="word"></div></div>
+  <div class="title"><small>ニナとメルの会話</small><b></b></div>
+  <div class="box"><div class="name"></div><div class="text"></div><div class="next">▼</div></div>
+  <div class="ui"><button class="auto">AUTO</button><button class="close">✕</button></div>
+</div>
+
+<button id="mapBtn" aria-label="村のマップ">🗺 マップ</button>
+<div id="map"><div class="wrap"><div class="hd"><div><small>VILLAGE MAP</small><h2>花の村マップ</h2></div><button class="x" aria-label="閉じる">✕</button></div>
+<p class="note">行きたい場所をタップすると、そこへ移動します</p><div class="svgbox"></div></div></div>
+<div id="start">
+  <div class="en">FLOWER VILLAGE WALK</div>
+  <h1>花の村をおさんぽ</h1>
+  <p>ニナとメルが暮らす村を、歩いてみる。</p>
+  <p style="font-size:12px;opacity:.6">— 試作版 —</p>
+  <button id="go">村に入る</button>
+  <button id="goAlbum">📖 会話アルバム</button>
+  <div id="how"></div>
+</div>
+<div id="nogl">この端末では3D表示(WebGL2)が使えないようです。</div>
+<script src="js/boot.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1700" width="1200" height="1700">
+<rect width="1200" height="1700" fill="#FFFFFF"/>
+<g fill="#EFE2E7" stroke="#2D3333" stroke-width="6">
+<rect x="620" y="80" width="500" height="560"/><rect x="80" y="80" width="510" height="560"/>
+<rect x="80" y="670" width="1040" height="420"/>
+<rect x="620" y="1120" width="500" height="500"/><rect x="80" y="1120" width="510" height="500"/>
+</g>
+<g font-family="sans-serif" fill="#8A8F8F" font-size="44" text-anchor="middle">
+<text x="870" y="370">コマ①</text><text x="335" y="370">コマ②</text><text x="600" y="890">コマ③</text><text x="870" y="1380">コマ④</text><text x="335" y="1380">コマ⑤</text>
+</g>
+<g font-family="serif" text-anchor="middle">
+<circle cx="600" cy="880" r="190" fill="#FFFFFF" stroke="#A88B5E" stroke-width="4" opacity="0.94"/>
+<text x="600" y="850" font-size="58" fill="#A88B5E">第2話・仮ページ</text>
+<text x="600" y="980" font-size="150" fill="#2D3333">4</text>
+</g>
+<text x="600" y="1675" font-family="sans-serif" font-size="34" fill="#8A8F8F" text-anchor="middle">4 / 5　右上→左下の順に読みます（表示確認用）</text>
+</svg>
